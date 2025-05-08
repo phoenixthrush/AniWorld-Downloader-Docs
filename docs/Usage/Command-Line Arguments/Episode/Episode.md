@@ -1,5 +1,7 @@
 # Episode
 
+Here you can specify the desired input method for selecting episodes, whether it's a direct link, a file, a local video, or an external provider.
+
 ## Episode
 
 Select a specific episode from an anime series to download. This allows you to target a particular episode instead of downloading an entire season or series.

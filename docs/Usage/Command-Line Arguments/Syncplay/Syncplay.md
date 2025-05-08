@@ -1,8 +1,6 @@
 # Syncplay
 
-## Syncplay Options
-
-Host anime sessions with friends using Syncplay for perfect sync.
+Host anime sessions with friends using Syncplay to ensure perfectly synchronized playback. Syncplay allows you to connect with others, share a room, and enjoy your favorite shows together in real-time.
 
 ### Hostname
 

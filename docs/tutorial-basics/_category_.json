@@ -1,8 +1,8 @@
 {
-  "label": "Tutorial - Basics",
+  "label": "Template - Basics",
   "position": 90,
   "link": {
     "type": "generated-index",
-    "description": "5 minutes to learn the most important Docusaurus concepts."
+    "description": "Read the AniWorld-Downloader Documentation"
   }
 }

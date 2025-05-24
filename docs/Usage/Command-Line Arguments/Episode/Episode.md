@@ -10,10 +10,10 @@ Select a specific episode from an anime series to download. This allows you to t
 
 **Default:** No episode is set by default.
 
-**Example:** `--episode https://aniworld.to/anime/stream/kaguya-sama-love-is-war/staffel-1/episode-1 https://aniworld.to/anime/stream/kaguya-sama-love-is-war/staffel-1/episode-1`
+**Example:** `aniworld --episode https://aniworld.to/anime/stream/kaguya-sama-love-is-war/staffel-1/episode-1`
 
 :::tip[Episode Selection]
-You can choose to download an entire anime series, a specific season, or just a single episode, whatever suits your preference.
+You can download an **entire anime series**, a **specific season**, a **single episode**, or even **movies**, whichever fits your needs.
 
 - The whole anime:
 ```
@@ -28,6 +28,11 @@ aniworld --episode https://aniworld.to/anime/stream/demon-slayer-kimetsu-no-yaib
 - Only Season 3 Episode 13:
 ```
 aniworld --episode https://aniworld.to/anime/stream/kaguya-sama-love-is-war/staffel-3/episode-13
+```
+
+- All Movies:
+```
+aniworld --episode https://aniworld.to/anime/stream/kaguya-sama-love-is-war/filme
 ```
 :::
 
@@ -50,10 +55,13 @@ https://aniworld.to/anime/stream/demon-slayer-kimetsu-no-yaiba/staffel-2
 
 # Only Season 3 Episode 13
 https://aniworld.to/anime/stream/kaguya-sama-love-is-war/staffel-3/episode-13
+
+# All Movies
+aniworld --episode https://aniworld.to/anime/stream/kaguya-sama-love-is-war/filme
 ```
 
 :::tip[Episode File]
-You can also use dynamic paths like `"animes.txt"` if the file is located in your current working directory.
+You can also use relative paths like `"animes.txt"` if the file is located in your current working directory.
 
 If the file path contains spaces, enclose it in double quotes, e.g., `"C:\Users\<YourUsername>\My Anime List\episodes.txt"`.
 

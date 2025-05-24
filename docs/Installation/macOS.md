@@ -6,7 +6,7 @@ Make sure Python is installed on your system. You can verify this by opening the
 
 You can download the latest Python installer by either selecting "macOS 64-bit universal2 installer" from the [Python Downloads Page](https://www.python.org/downloads/latest/) or by using [Homebrew](https://brew.sh).
 
-:::tip[My tip]
+:::tip[Homebrew Installation]
 
 To install Homebrew, run the following command in your Terminal:
 
@@ -19,6 +19,8 @@ Once Homebrew is installed, you can install Python by running:
 ```
 brew install python@3.13
 ```
+
+:::
 
 To create a virtual environment, use the following command:
 ```

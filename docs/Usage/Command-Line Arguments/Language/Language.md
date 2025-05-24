@@ -11,3 +11,7 @@ Choose your desired language setting: German Dub, English Dub, or German Sub.
 **Default:** `German Sub`
 
 **Example:** `--language "German Dub"`
+
+:::tip[Language Options]
+Always enclose the language option in double quotes, for example: `"English Dub"`.
+:::

@@ -12,7 +12,7 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: 'Multiple Providers',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    Svg: require('@site/static/img/1.svg').default,
     description: (
       <>
         Access almost all streaming providers on aniworld.to.
@@ -21,7 +21,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Syncplay Support',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    Svg: require('@site/static/img/2.svg').default,
     description: (
       <>
         Enjoy synchronized anime viewing with friends using our seamless Syncplay integration.
@@ -30,7 +30,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Aniskip Support',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    Svg: require('@site/static/img/3.svg').default,
     description: (
       <>
         Effortlessly skip anime intros and outros with Aniskip integration.

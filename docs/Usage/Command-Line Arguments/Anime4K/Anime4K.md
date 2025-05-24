@@ -5,9 +5,9 @@
 ## Configuration for High-Performance GPUs
 If you have a high-end GPU, such as:
 
-- **NVIDIA**: GTX 1080, RTX 2070, RTX 3060
-- **AMD**: RX 590, Vega 56, 5700XT, 6600XT
-- **Apple Silicon**: M1 Pro/Max/Ultra, M2 Pro/Max
+- **NVIDIA**: GTX 1080, RTX 2070, RTX 3060, ...
+- **AMD**: RX 590, Vega 56, 5700XT, 6600XT, ...
+- **Apple Silicon**: M1 Pro/Max/Ultra, M2 Pro/Max, ...
 
 Run the following command to optimize Anime4K for your GPU:
 
@@ -18,9 +18,9 @@ aniworld --anime4k High
 ## Configuration for Low-Performance GPUs
 For low-end or integrated GPUs, such as:
 
-- **NVIDIA**: GTX 980, GTX 1060
-- **AMD**: RX 570
-- **Apple Silicon**: M1, M2
+- **NVIDIA**: GTX 980, GTX 1060, ...
+- **AMD**: RX 570, ...
+- **Apple Silicon**: M1, M2, ...
 - **Intel**: Integrated GPUs
 
 Use this command to configure Anime4K for better performance:

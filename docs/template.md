@@ -78,6 +78,12 @@ This is a dangerous warning.
 
 ::: details
 This is a details block.
+
+```python
+def foo():
+    return "This is a details block."
+```
+
 :::
 
 ## More

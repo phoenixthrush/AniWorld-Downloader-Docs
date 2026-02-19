@@ -9,21 +9,22 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
+      { text: 'Quick Start', link: '/quick-start' },
     ],
 
     sidebar: [
       {
-        text: 'Examples',
+        text: 'Table of Contents',
         items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
+          { text: 'Quick Start', link: '/quick-start' },
+          { text: 'Usage Guide', link: '/usage' },
+          { text: 'Configuration', link: '/configuration' }
         ]
       }
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
+      { icon: 'github', link: 'https://github.com/phoenixthrush/AniWorld-Downloader' }
     ]
   }
 })

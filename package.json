@@ -1,6 +1,7 @@
 {
+  "packageManager": "pnpm@11.15.1",
   "devDependencies": {
-    "vitepress": "2.0.0-alpha.16"
+    "vitepress": "1.6.4"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",

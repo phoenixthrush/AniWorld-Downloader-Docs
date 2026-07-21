@@ -1,17 +1,17 @@
-# AniWorld-Downloader Documentation
+# AniWorld Downloader Docs
+
+The documentation site for [AniWorld Downloader](https://github.com/phoenixthrush/AniWorld-Downloader), built with VitePress.
 
 ```bash
-pnpm vitepress dev docs
+pnpm install
+pnpm docs:dev
 ```
 
-## Build
+Build and preview the production site with:
 
 ```bash
-pnpm vitepress build docs
+pnpm docs:build
+pnpm docs:preview
 ```
 
-## Preview
-
-```bash
-pnpm vitepress preview docs
-```
+Documentation source lives in [`docs`](./docs).

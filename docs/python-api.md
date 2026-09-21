@@ -57,7 +57,7 @@ from aniworld import (
 )
 ```
 
-Additional source-specific classes are available from `aniworld.models`, including `MegaKinoEpisode`, `FilmPalastEpisode`, `CinebySeries`, `MangaFireToSeries`, `KinoxSeries`, and `BurningSeriesSeries`.
+Additional source-specific classes are available from `aniworld.models`, including `MegaKinoEpisode`, `FilmoEpisode`, `FilmPalastEpisode`, `MoflixEpisode`, `CinebySeries`, `MangaFireToSeries`, `KinoxSeries`, and `BurningSeriesSeries`. Movie-oriented backends may use an `Episode` class for a whole movie.
 
 ```python
 from aniworld.models import MegaKinoEpisode
@@ -71,6 +71,6 @@ Use a current URL from the source site in real code. Domains and page formats ca
 
 ## More examples
 
-The repository contains working examples for AniWorld, SerienStream, MegaKino, and Hanime in the [`examples` directory](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples).
+The [`examples` directory](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples) contains site-specific model examples, metadata attributes, muxing, and genre queries. Use the example for your backend: attributes and available actions differ across models.
 
-The Web UI's internal `/api/*` routes are not a versioned public API. For integrations, use the Python models or invoke the CLI.
+For optional genre filters, sorting, runtime tag discovery, and result limits, see [Genre Search](./genre-search). For remote integrations, use the [HTTP API](./http-api) with a scoped API key. Its routes are not versioned, so consult the in-app reference for your installed version.

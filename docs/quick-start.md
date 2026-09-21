@@ -4,7 +4,7 @@ The Python package is the recommended installation for desktop use. Docker is a 
 
 ## Python package
 
-You need [**Python 3.10 or newer**](https://www.python.org/downloads/). On Windows, use **Python 3.13** for now.
+You need [**Python 3.11 or newer**](https://www.python.org/downloads/). The current CI checks Python 3.11–3.14 on Linux and Python 3.13 on Windows and macOS.
 
 ```bash
 python -m pip install -U aniworld
@@ -47,14 +47,14 @@ Search for a title or paste a supported URL, choose the episodes, then choose Do
 
 ```bash
 aniworld --no-menu \
-  "https://aniworld.to/anime/stream/example/staffel-1/episode-1"
+  "SUPPORTED_URL"
 ```
 
-See [Command Line](./usage) for the useful flags and a few real combinations.
+Replace `SUPPORTED_URL` with a URL from a supported site. See [Command Line](./usage) for available flags and examples.
 
 ## External tools
 
-Downloads need FFmpeg. Watching needs the player selected by the action:
+Video downloads need FFmpeg. Watching needs the player selected by the action:
 
 | Action | Tool |
 | --- | --- |
@@ -63,6 +63,27 @@ Downloads need FFmpeg. Watching needs the player selected by the action:
 | Syncplay | Syncplay and mpv or IINA |
 
 Portable dependencies can be installed automatically on Windows. On macOS and Linux, install missing tools with your normal package manager.
+
+## Optional integrations
+
+The normal installation includes the Web UI and terminal dependencies. Add OIDC SSO or the Discord request bot with:
+
+```bash
+python -m pip install "aniworld[sso]"
+python -m pip install "aniworld[discord]"
+```
+
+Use `python -m pip install "aniworld[all]"` for both. The Docker image already includes these extras. See [Web UI authentication](./web-ui#local-accounts) and [Discord requests](./automation#discord-request-bot) for setup.
+
+## Development version
+
+To install the latest commit from the `models` branch, with Git installed:
+
+```bash
+pip install --upgrade git+https://github.com/phoenixthrush/AniWorld-Downloader.git@models
+```
+
+This follows development rather than the published PyPI release. For an editable checkout and tests, see [Contributing](./contributing).
 
 ## Update or remove
 

@@ -1,6 +1,6 @@
 # Configuration
 
-AniWorld Downloader stores its configuration in one `.env` file:
+AniWorld Downloader loads startup settings from `.env` and the process environment:
 
 | System | Location |
 | --- | --- |
@@ -15,9 +15,21 @@ ANIWORLD_PROVIDER=VOE
 ANIWORLD_DOWNLOAD_PATH=Downloads
 ```
 
-::: tip Web UI settings
-Users, custom paths, queued downloads, and Auto-Sync jobs are saved permanently. Most other changes made on the Settings page last only until the app restarts. Put those values in `.env` to keep them.
-:::
+## What survives a restart
+
+| Data | Storage | Persists? |
+| --- | --- | --- |
+| Most general settings changed in the Web UI | Running process | No; save their environment values |
+| Startup settings | `.env` or deployment environment | Yes |
+| Users, API keys, custom paths, queue records, Auto-Sync exclusions | `aniworld.db` | Yes |
+| Discord settings saved in the Web UI | `.env` | Yes |
+| Custom CSS and shader | `custom.css`, `custom.frag` | Yes |
+
+**Settings → Administration → Export settings** downloads the current configuration as an `.env` file. Secrets such as the Discord token, OIDC secret, and administrator password are omitted; keep those values when merging the export into your existing configuration.
+
+Existing process environment variables override values loaded from `.env`. CLI options override the corresponding settings for that invocation. Restart after editing startup configuration.
+
+Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. Relative values are resolved against your home directory. On first relocation, the app can copy the old `.env`; it does not migrate the database or theme files. Move those separately with the app stopped if you want to retain them.
 
 ## Everyday settings
 
@@ -31,7 +43,9 @@ Users, custom paths, queued downloads, and Auto-Sync jobs are saved permanently.
 | `ANIWORLD_LANG_SEPARATION` | `0` | Put downloads into language folders |
 | `ANIWORLD_DISABLE_ENGLISH_SUB` | `0` | Hide and block English subtitles |
 | `ANIWORLD_MOVIE_FOLDER` | `1` | Put each movie in its own folder |
-| `ANIWORLD_VIDEO_CODEC` | `copy` | `copy`, `h264`, `h265`, or `av1` |
+| `ANIWORLD_VIDEO_CODEC` | `copy` | Copy streams, or encode using a supported software/hardware codec |
+| `MANGAFIRE_FORMAT` | `jpg` | Chapter images (`jpg`) or comic archive (`cbz`) |
+| `ANIWORLD_NO_AUTO_INSTALL` | `0` | Disable automatic dependency downloads and installation |
 | `ANIWORLD_HLS_CONCURRENCY` | `8` | Parallel HLS segments, from `1` to `32` |
 | `ANIWORLD_DEBUG_MODE` | `0` | Enable detailed logging |
 
@@ -45,7 +59,11 @@ The default naming template is:
 ANIWORLD_NAMING_TEMPLATE="{title} ({year}) [imdbid-{imdbid}]/Season {season}/{title} S{season}E{episode}.mkv"
 ```
 
-Available placeholders are `{title}`, `{year}`, `{imdbid}`, `{season}`, `{episode}`, and `{language}`. Older `%title%` style placeholders are supported too. The file extension controls the output container.
+Available placeholders are `{title}`, `{year}`, `{imdbid}`, `{season}`, `{episode}`, and `{language}`. Older `%title%` style placeholders are supported too. The file extension controls the output container. The Web UI's MKV/MP4 setting changes that extension in the running naming template; persist the template to keep it across restarts.
+
+`copy` avoids re-encoding. Software codec choices include `h264`, `h265`, and `av1`; hardware options include `h264_nvenc`, `hevc_nvenc`, `h264_amf`, `hevc_amf`, `av1_amf`, `h264_qsv`, `hevc_qsv`, and `av1_qsv`. These require a compatible FFmpeg build and, for hardware encoding, the corresponding device and drivers.
+
+Model-specific naming can differ, particularly for manga and movies. Use **Settings → path preview** or the Python model's path attributes to inspect the result before a large batch.
 
 ## Sources and playback
 
@@ -60,17 +78,18 @@ Available placeholders are `{title}`, `{year}`, `{imdbid}`, `{season}`, `{episod
 | `ANIWORLD_ENABLE_BURNINGSERIES` | `0` | Enable BurningSeries support |
 | `ANIWORLD_USE_IINA` | `1` | Use IINA for Syncplay on macOS; use `0` for mpv |
 
-Kinox and BurningSeries are off by default because their availability and captcha requirements vary by region.
+Site toggles control Web UI visibility. See [Supported Sites](./supported-sites) for every toggle and disabled default. They are not a guarantee that a backend works, and do not remove it from the Python package.
 
-## Auto-Sync defaults
+## Auto-Sync
 
 ```dotenv
-ANIWORLD_SYNC_SCHEDULE=0
-ANIWORLD_SYNC_LANGUAGE="German Dub"
-ANIWORLD_SYNC_PROVIDER=VOE
+ANIWORLD_ENABLE_AUTOSYNC=1
+ANIWORLD_AUTOSYNC_MODE=interval
+ANIWORLD_AUTOSYNC_INTERVAL=24h
+ANIWORLD_AUTOSYNC_NEW_ONLY=0
 ```
 
-Schedules can be `0`, `1min`, `30min`, `1h`, `2h`, `4h`, `8h`, `12h`, `16h`, or `24h`. These values become the defaults for new jobs.
+For fixed times, use `ANIWORLD_AUTOSYNC_MODE=cron` and `ANIWORLD_AUTOSYNC_CRON="0 3 * * *"`. See [Auto-Sync](./automation#auto-sync) for how library matching, exclusions, and scheduling work.
 
 ## Web authentication
 
@@ -81,11 +100,11 @@ ANIWORLD_WEB_ADMIN_USER=admin
 ANIWORLD_WEB_ADMIN_PASS=change-this-password
 ```
 
-When running through Docker, authentication modes can also be set through `ANIWORLD_WEB_AUTH`, `ANIWORLD_WEB_SSO`, and `ANIWORLD_WEB_FORCE_SSO`.
+Authentication modes can also be set through `ANIWORLD_WEB_AUTH`, `ANIWORLD_WEB_SSO`, and `ANIWORLD_WEB_FORCE_SSO`.
 
 ### OIDC single sign-on
 
-Use `aniworld -w -wS` to offer SSO beside local accounts, or `aniworld -w -wFS` for SSO only.
+Install `aniworld[sso]`, then use `aniworld -w -wS` to offer SSO beside local accounts, or `aniworld -w -wFS` for SSO only. Register `https://aniworld.example.com/oidc/callback` as the redirect URI at your identity provider, replacing the origin with your public app URL.
 
 ```dotenv
 ANIWORLD_WEB_BASE_URL=https://aniworld.example.com
@@ -107,13 +126,13 @@ The Web UI can run a Discord bot beside the server.
 | `ANIWORLD_DISCORD_BOT_ENABLED` | Enable the bot |
 | `ANIWORLD_DISCORD_TOKEN` | Discord bot token |
 | `ANIWORLD_DISCORD_OWNER_ID` | Owner account ID |
-| `ANIWORLD_DISCORD_MODE` | `standard` or `advanced` command set |
+| `ANIWORLD_DISCORD_MODE` | `standard` requires owner approval; `advanced` queues directly |
 | `ANIWORLD_DISCORD_REQUEST_ROLE_ID` | Role allowed to create requests |
 | `ANIWORLD_DISCORD_GUILD_ID` | Guild used for command registration |
 | `ANIWORLD_DISCORD_LANGUAGE` | Bot response language |
 | `ANIWORLD_DISCORD_ANNOUNCE_CHANNEL_ID` | Channel for announcements |
 
-The Settings page is the easiest place to configure these values.
+The Settings page is the easiest place to configure these values and saves them to `.env`. See [Discord requests](./automation#discord-request-bot) for the workflow.
 
 ## Captcha controls
 

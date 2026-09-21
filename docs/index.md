@@ -25,7 +25,7 @@ features:
   - title: Terminal and CLI
     details: Use the interactive menu or pass URLs directly for scripts and headless systems.
   - title: Automation
-    details: Keep series updated with Auto-Sync, watch planned releases, or accept Discord requests.
+    details: Keep AniWorld series in your library updated with Auto-Sync, or accept Discord requests.
   - title: Flexible setup
     details: Install the recommended Python package or run the ready-made Docker image on a server or NAS.
 ---
@@ -39,6 +39,12 @@ features:
 | Run commands or scripts | [Command Line](./usage) |
 | Change paths, languages, providers, or auth | [Configuration](./configuration) |
 | Run a server or NAS setup | [Docker](./docker) |
+| Automate requests over HTTP | [HTTP API](./http-api) |
+| Customize the interface | [Themes and Appearance](./theming) |
+| Schedule updates or set up Discord | [Auto-Sync and Discord](./automation) |
+| Check site support | [Supported Sites](./supported-sites) |
+| Filter genres in Python | [Genre Search](./genre-search) |
+| Run tests or contribute | [Contributing](./contributing) |
 | Import AniWorld Downloader in Python | [Python API](./python-api) |
 | Fix a problem | [Troubleshooting](./troubleshooting) |
 

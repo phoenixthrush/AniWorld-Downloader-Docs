@@ -21,8 +21,7 @@ The remaining pages are intentionally simple:
 | Page | What it does |
 | --- | --- |
 | Library | Shows downloaded folders and lets admins remove files |
-| Auto-Sync | Checks followed series for new episodes on a schedule |
-| Planned | Watches for unreleased titles and queues them once found |
+| Auto-Sync | Checks AniWorld’s new-episode feed for titles already in your library |
 | Settings | Controls paths, defaults, users, interface options, and the Discord bot |
 
 ## Custom download paths
@@ -73,4 +72,18 @@ When a queued item needs a captcha, the queue shows an action for it. Some chall
 
 ## Settings and persistence
 
-Most general settings changed in the Web UI last until the process restarts. Put values in `~/.aniworld/.env` when they must survive restarts. Custom paths, users, queue data, and scheduled jobs are stored in the Web UI database.
+Most general settings changed in the Web UI last until the process restarts. Put values in `~/.aniworld/.env` when they must survive restarts. Custom paths, users, API keys, queue data, and Auto-Sync exclusions are stored in the Web UI database. Themes and Discord bot settings also persist. See [Configuration](./configuration#what-survives-a-restart) for the distinction and the settings export option.
+
+## Automation and integrations
+
+- [Auto-Sync and Discord](./automation) explains scheduling, library matching, exclusions, and request approvals.
+- [HTTP API](./http-api) covers scoped keys and queue automation.
+- [Themes and Appearance](./theming) covers CSS, imports, background shaders, and recovery.
+
+The current app has no separate Planned page. Browse rows for new titles are discovery lists, not persistent release subscriptions.
+
+## Sites and languages
+
+Enable or disable site tabs in Settings. Disabled-by-default sources and current status notes are listed under [Supported Sites](./supported-sites). Available languages and hosters come from each title; changing a preference cannot add a missing stream.
+
+The Web UI's genre browsing currently uses AniWorld. Other sites have [Python genre functions](./genre-search), but those are not automatically exposed as Web UI filters.

@@ -1,72 +1,94 @@
 # Docker
 
-Docker runs the Web UI with Chromium and FFmpeg already included. It is the simplest option for a home server or NAS.
+The image runs the Web UI with FFmpeg, Patchright Chromium, Xvfb for browser challenges, and the optional SSO and Discord dependencies already included.
 
-## Docker Compose
+## Start with Compose
 
-Download [`docker-compose.yaml`](https://github.com/phoenixthrush/AniWorld-Downloader/blob/main/docker-compose.yaml), then create the download folder before starting the container:
+Save [`docker-compose.yaml`](https://github.com/phoenixthrush/AniWorld-Downloader/blob/models/docker-compose.yaml) in a folder on your machine. Run these commands from that folder:
 
 ```bash
 mkdir -p Downloads
 docker compose up -d
 ```
 
-Open `http://localhost:8080`.
+Open `http://localhost:8080`. For a remote server, use its address instead of `localhost`.
 
-::: warning Create the folder first
-If Docker creates `Downloads` itself on Linux, it may belong to root and prevent the app from writing files.
-:::
+Create `Downloads` first: on Linux, a directory created automatically by Docker may belong to root and be unwritable by the app's unprivileged user.
 
-## Common commands
+## Everyday commands
 
 ```bash
 # Follow logs
 docker compose logs -f
 
-# Update and restart
+# Pull the latest image and recreate the container
 docker compose pull
 docker compose up -d
 
-# Stop the app
+# Stop and remove the container, keeping its data
 docker compose down
 ```
 
-`docker compose down` keeps both downloads and configuration. Do not add `-v` unless you intend to remove the configuration volume.
+Do not add `-v` to `down` unless you intend to remove named volumes, including the app's configuration and database.
 
 ## Persistent data
 
-| Container path | Compose storage | Contains |
+| Container path | Supplied Compose storage | Contents |
 | --- | --- | --- |
-| `/app/Downloads` | `./Downloads` | Downloaded media |
-| `/home/aniworld/.aniworld` | `aniworld-data` volume | Settings, users, jobs, and browser data |
+| `/app/Downloads` | `./Downloads` on the host | Downloaded media |
+| `/home/aniworld/.aniworld` | `aniworld-data` named volume | `.env`, database, authentication data, custom CSS/shader, and default persistent browser profile |
+| `/ms-playwright` | Built into the image | Chromium browser installation |
 
-## Configuration
+The browser binary ships in the image; you do not need to download it again into a volume. If you override the browser profile directory, mount that location separately if it should persist.
 
-Add variables under `environment` in the Compose service:
+To change where downloads live on the host, change the left side of the download volume mapping. Keep `/app/Downloads` on the container side unless you also change `ANIWORLD_DOWNLOAD_PATH`. Additional custom paths need their own mounts and must use container paths in the Web UI.
+
+Stop the service before making a consistent backup of its database and app data. Back up the download folder separately. Restoring the named volume preserves users, API keys, custom paths, queue records, Auto-Sync exclusions, and themes.
+
+## Configure the service
+
+The supplied Compose file includes commented examples for language, hoster fallback, paths, site toggles, authentication, Auto-Sync, Discord, and captcha controls. Add values under the existing service's `environment:` block:
 
 ```yaml
-services:
-  aniworld:
-    image: ghcr.io/phoenixthrush/aniworld-downloader:latest
-    environment:
-      ANIWORLD_LANGUAGE: "German Dub"
-      ANIWORLD_PROVIDER: "VOE"
-      ANIWORLD_WEB_AUTH: "1"
-      ANIWORLD_WEB_ADMIN_USER: "admin"
-      ANIWORLD_WEB_ADMIN_PASS: "change-this-password"
+environment:
+  ANIWORLD_LANGUAGE: "German Dub"
+  ANIWORLD_PROVIDER: "VOE"
+  ANIWORLD_WEB_AUTH: "1"
 ```
 
-See [Configuration](./configuration) for all settings.
+Alternatively, save environment variables in a host file and add this under `services.aniworld`:
+
+```yaml
+env_file:
+  - ./.env
+```
+
+`env_file` injects environment variables; it does not mount the file. Explicit `environment:` values take precedence over `env_file`, and process environment values take precedence over the app's own `.env`.
+
+After changing the Compose configuration or its environment file, run `docker compose up -d` to apply it. If the values do not refresh, recreate the service with `docker compose up -d --force-recreate`.
+
+Most settings changed through the Web UI last only until the app process restarts. Keep those settings in your deployment configuration. Discord settings saved through the UI are written to the app's `.env`; avoid also setting them in Compose if you want the saved values to control startup.
 
 ## Build locally
 
-Clone the main repository, replace the service's `image:` line with `build: .`, and run:
+Clone the application repository and enter it:
 
 ```bash
-docker compose build
-docker compose up -d
+git clone --branch models https://github.com/phoenixthrush/AniWorld-Downloader.git
+cd AniWorld-Downloader
+mkdir -p Downloads
 ```
+
+Replace the Compose service's `image:` line with `build: .`, then run:
+
+```bash
+docker compose up -d --build
+```
+
+The build downloads dependencies and browser files. It can take longer than starting the published image.
 
 ## Remote access
 
-The container listens on port `8080`. Enable authentication before making it available outside your local network. For a public domain, place it behind an HTTPS reverse proxy and set `ANIWORLD_WEB_BASE_URL` to the external address.
+The service listens on container port `8080`, which Compose publishes on the host. To restrict it to the host machine, use `127.0.0.1:8080:8080` as the port mapping.
+
+For access from other users or networks, enable [authentication](./web-ui#local-accounts). For a public domain, use an HTTPS reverse proxy and set `ANIWORLD_WEB_BASE_URL` to the external address. See [Configuration](./configuration) for OIDC settings and [Troubleshooting](./troubleshooting) for filesystem or captcha problems.

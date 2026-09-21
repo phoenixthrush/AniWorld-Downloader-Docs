@@ -27,8 +27,14 @@ export default defineConfig({
           { text: 'Web UI', link: '/web-ui' },
           { text: 'Command Line', link: '/usage' },
           { text: 'Configuration', link: '/configuration' },
+          { text: 'Supported Sites', link: '/supported-sites' },
+          { text: 'Auto-Sync and Discord', link: '/automation' },
+          { text: 'Themes and Appearance', link: '/theming' },
           { text: 'Docker', link: '/docker' },
+          { text: 'HTTP API', link: '/http-api' },
           { text: 'Python API', link: '/python-api' },
+          { text: 'Genre Search', link: '/genre-search' },
+          { text: 'Contributing and Testing', link: '/contributing' },
           { text: 'Troubleshooting', link: '/troubleshooting' }
         ]
       }

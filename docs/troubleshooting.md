@@ -21,9 +21,9 @@ If several Python installations are present, install and run the package with th
 
 ## FFmpeg or player missing
 
-Downloads require FFmpeg. Watching requires mpv, VLC, or IINA on macOS. Install the missing program and make sure its executable is available on `PATH`.
+Video downloads require FFmpeg. Watching uses mpv or IINA on macOS; synchronized playback also needs Syncplay. Install the missing program and make sure its executable is available on `PATH`.
 
-Docker already includes the parts needed for downloads. Standalone releases generally bundle them too, but those builds are rarely tested and may not work on every system.
+Docker already includes the parts needed for downloads. Standalone builds still depend on the tools required by the selected action being available or installed by the app.
 
 ## Browser or captcha problems
 
@@ -32,9 +32,10 @@ The first run may download Chromium. Keep the app open until it finishes and mak
 For repeated `403` or captcha failures:
 
 1. Open the source site in a normal browser and confirm it works on your connection.
-2. Set `ANIWORLD_CAPTCHA_VISIBLE=1` and solve the prompt yourself.
-3. Set `ANIWORLD_CAPTCHA_DEBUG_LOG=1` for more detail.
-4. Try `ANIWORLD_NO_ADBLOCK=1` if the challenge page stays blank.
+2. If the Chromium installation is missing, run `python -m patchright install chromium` with the same Python installation as the app.
+3. Set `ANIWORLD_CAPTCHA_VISIBLE=1` to inspect the browser. Use `ANIWORLD_CAPTCHA_MANUAL=1` if you want to solve challenges yourself.
+4. Set `ANIWORLD_CAPTCHA_DEBUG_LOG=1` for more detail.
+5. Try `ANIWORLD_NO_ADBLOCK=1` if the challenge page stays blank.
 
 Some sites use regional blocks or change their protection without warning.
 
@@ -78,7 +79,7 @@ mkdir -p Downloads
 docker compose up -d
 ```
 
-If it already exists, check that your Docker user can write to it. The application itself runs as an unprivileged user.
+If it already exists, check its ownership and permissions for the container’s application user, not just your host login. The application itself runs as an unprivileged user.
 
 ## Still stuck?
 
@@ -92,3 +93,15 @@ If it already exists, check that your Docker user can write to it. The applicati
 - steps another person can follow to reproduce it
 
 Please search existing issues first. Never post login details, cookies, Discord tokens, or OIDC secrets.
+
+## Settings disappear after restart
+
+Most settings changed in the Web UI apply only to the current process. Export them from Settings and merge them into your app `.env`, or configure them through Docker. Explicit process environment variables override `.env` values. See [persistence](./configuration#what-survives-a-restart).
+
+## A theme hides the controls
+
+Open `http://localhost:8080/settings?nocss=1`, adjusting the address for your server. This disables custom CSS and the shader for that page so you can correct or clear them. See [theme recovery](./theming#recover-from-a-broken-theme).
+
+## API requests return 401 or 403
+
+Check that the key is valid and that its scope permits the operation. Administrative endpoints need a full-access key. API keys cannot manage other keys, even with full access. See [HTTP API](./http-api).

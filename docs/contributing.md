@@ -23,11 +23,11 @@ python -m pip install ruff
 
 ```bash
 pytest
-ruff check src tests
-ruff format --check tests
+ruff check .
+ruff format --check .
 ```
 
-These match the current CI checks. The automated suite uses temporary configuration, database, and download locations and blocks network connections. It tests behavior with fixtures and mocked services; passing it does not confirm that third-party sites currently work.
+These match the current CI checks. The automated suite uses temporary configuration, database, and download locations and blocks network connections, including DNS lookups, native curl requests, and browser launches, during collection and test execution. CI installs dependencies from package registries, but the tests must not fetch source sites or stream hosters. They test behavior with fixtures and mocked services; passing them does not confirm that third-party sites currently work.
 
 ## Live provider checks
 

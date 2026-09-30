@@ -15,6 +15,8 @@ The library acts as the list of followed titles. When a feed entry matches a tit
 
 Exclude a series when you want to keep it in your library without having Auto-Sync update it. Exclusions are saved in the database.
 
+Auto-Sync detects the languages of your existing files and checks availability for incoming episodes. If it cannot detect a language, or the new episodes are only available in another language, it skips the title instead of switching languages automatically.
+
 ### Interval schedule
 
 ```dotenv

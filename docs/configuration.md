@@ -76,6 +76,7 @@ Model-specific naming can differ, particularly for manga and movies. Use **Setti
 | `ANIWORLD_ENABLE_HTV` | `0` | Enable Hanime support |
 | `ANIWORLD_ENABLE_KINOX` | `0` | Enable Kinox support |
 | `ANIWORLD_ENABLE_BURNINGSERIES` | `0` | Enable BurningSeries support |
+| `ANIWORLD_KINOX_DOMAIN` | Empty, uses `kinox.to` | Override the Kinox hostname, without `https://` |
 | `ANIWORLD_USE_IINA` | `1` | Use IINA for Syncplay on macOS; use `0` for mpv |
 
 Site toggles control Web UI visibility. See [Supported Sites](./supported-sites) for every toggle and disabled default. They are not a guarantee that a backend works, and do not remove it from the Python package.

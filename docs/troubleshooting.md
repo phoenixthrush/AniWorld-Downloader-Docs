@@ -39,6 +39,12 @@ For repeated `403` or captcha failures:
 
 Some sites use regional blocks or change their protection without warning.
 
+### Moflix browse or search returns 403
+
+Current Moflix requests use HTTP first, then the existing Chromium browser when the response identifies a Cloudflare challenge. This applies to browse, keyword search, and title metadata. The fallback loads the homepage before requesting the API, so it may take longer than an ordinary HTTP request. Chromium must be available even when you only want to browse titles.
+
+Update the package if your version lacks this fallback. If it still fails, follow the browser checks above and include the debug log in your report. Other HTTP errors still propagate; the fallback does not treat every `403` as a Cloudflare challenge.
+
 ## A provider fails
 
 Stream hosts regularly remove links or reject requests. Try another provider or configure a fallback order:

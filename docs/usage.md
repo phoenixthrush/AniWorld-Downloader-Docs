@@ -41,7 +41,21 @@ aniworld --no-menu \
 
 Languages are `German Dub`, `English Dub`, `English Sub`, and `German Sub`. Not every title offers every language.
 
-The selected provider is tried first. If it fails, the configured fallback order is used.
+The selected provider is tried first. If it fails, the configured fallback order is used for providers available in the selected language. The downloader does not automatically choose another language.
+
+## Adult-site backends
+
+HentaiTV, AnimeIDHentai, and HentaiHaven URLs can be downloaded directly, without a Web UI site tab:
+
+```bash
+aniworld --no-menu "https://animeidhentai.com/inaka-ni-wa-kore-kurai-shika-goraku-ga-nai-episode-1"
+aniworld --no-menu "https://hentaihaven.xxx/watch/ane-wa-yanmama-junyuu-chuu/"
+aniworld --no-menu "https://hentai.tv/hentai/hamehara-sore-sekuhara-desu-episode-1-p83"
+```
+
+HentaiHaven title URLs process the title's episodes; the other two backends accept episode URLs. These models default to `English Sub` and use their own site provider. That preset describes the model's stream selection; the downloader does not currently fetch or mux separate `.srt` files from HentaiTV or AnimeIDHentai. Do not assume every saved video contains subtitles.
+
+Keyword search is available through the [Python API](./python-api#adult-site-backends), rather than a dedicated CLI search flag.
 
 ## Useful options
 

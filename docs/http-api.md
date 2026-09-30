@@ -31,9 +31,24 @@ curl -H "X-API-Key: YOUR_API_KEY" \
   http://localhost:8080/api/search
 ```
 
-The response has a `results` list with title, URL, and poster information. Site keys include `aniworld`, `sto`, `megakino`, `moflix`, `filmo`, `filmpalast`, `mangafire`, `htv`, `kinox`, `burningseries`, and `cineby`. An implemented backend does not guarantee a currently working source; check the [supported sites](./supported-sites).
+The response has a `results` list with title, URL, and poster information. Site keys include `aniworld`, `sto`, `megakino`, `moflix`, `filmo`, `filmpalast`, `mangafire`, `htv`, `kinox`, and `burningseries`. An implemented backend does not guarantee a currently working source; check the [supported sites](./supported-sites).
 
-The `/api/genres` and `/api/genre` routes currently serve AniWorld. Genre filtering for other sources is available through [Python search functions](./genre-search), not a generic HTTP genre endpoint.
+Genre browsing uses `GET /api/genres?site=SITE` to list `{name, slug}` entries and `GET /api/genre?site=SITE&slug=SLUG&page=1` to return `results` and `has_more`. Both default to `site=aniworld`. Supported site keys are `aniworld`, `sto`, `burningseries`, `megakino`, `kinox`, `filmpalast`, `filmo`, `htv`, and `mangafire`; Moflix has no genre listing. Filmo and MangaFire use numeric genre IDs as their slugs.
+
+```bash
+curl -H "X-API-Key: YOUR_API_KEY" \
+  "http://localhost:8080/api/genres?site=filmpalast"
+
+curl -H "X-API-Key: YOUR_API_KEY" --get \
+  --data-urlencode "site=filmpalast" \
+  --data-urlencode "slug=action" \
+  --data-urlencode "page=1" \
+  http://localhost:8080/api/genre
+```
+
+Use a slug returned by the genre list. Each page contains up to 30 results. AniWorld follows the site's pages; other backends are sliced into pages within their available listing scope. See [Genre Search](./genre-search) for those limits and additional Python filters.
+
+HentaiTV, AnimeIDHentai, and HentaiHaven have CLI and Python backends, but are not registered as Web UI search sites.
 
 ## Queue a download
 

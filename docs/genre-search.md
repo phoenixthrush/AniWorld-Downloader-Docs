@@ -1,6 +1,6 @@
 # Genre Search in Python
 
-Genre filters are optional backend arguments. They do not require Web UI changes, and support differs by source. This page describes the current implementation; the repository's [genre examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples) show each site's result fields and sample options.
+Genre filters are optional backend arguments, and support differs by source. The Web UI and [HTTP API](./http-api#search) also expose genre browsing for the nine sites below. Additional filters and sorting described here are Python options. The repository's [genre examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples) show each site's result fields and sample options.
 
 ## Result limits
 
@@ -17,7 +17,7 @@ Most functions default to `None`; Hanime defaults to `24` and MangaFire to `20`.
 
 There is no fixed genre allowlist shared by the sites. Depending on the backend, the app reads tags from a live page/API or sends your slug or ID to the site. Example comments marked **09/2026 as of right now** are snapshots, not validation rules.
 
-Discovery helpers are available for AniWorld, FilmPalast, MegaKino, Hanime, and MangaFire. SerienStream, Filmo, and Kinox accept the source's values directly. BurningSeries matches the genre against its runtime index, which is cached for the process lifetime. Other browse data may also be cached, so runtime discovery does not mean every call downloads a fresh list.
+Discovery helpers are available for all nine sites in the table: `fetch_genres`, `fetch_s_to_genres`, `fetch_burningseries_genres`, `fetch_kinox_genres`, `fetch_filmpalast_genres`, `fetch_megakino_genres`, and `fetch_filmo_genres` in `aniworld.search`, plus `fetch_hanime_genres` and `fetch_mangafire_genres` in their backend modules. BurningSeries reads its runtime index, which is cached for the process lifetime. Other browse data may also be cached, so runtime discovery does not mean every call downloads a fresh list.
 
 An unavailable genre may raise an HTTP error or `ValueError`, depending on the backend. A site that returns a successful empty page can produce an empty result instead. Handle those outcomes in your application.
 
@@ -35,7 +35,7 @@ An unavailable genre may raise an HTTP error or `ValueError`, depending on the b
 | Hanime | `search_hanime` | `genre`, `sort`, optional keyword | First genre page |
 | MangaFire | `search_series` | `genre`, `sort`, optional keyword | Follows result pages |
 
-The first seven functions are in `aniworld.search`. Hanime uses `aniworld.extractors.provider.hanime_tv`; MangaFire uses `aniworld.models.mangafire_to.series`. Moflix and Cineby do not currently have matching genre-filter functions.
+The first seven functions are in `aniworld.search`. Hanime uses `aniworld.extractors.provider.hanime_tv`; MangaFire uses `aniworld.models.mangafire_to.series`. Moflix does not currently have a matching genre-filter function.
 
 ## AniWorld
 
@@ -93,7 +93,7 @@ matches = query_burningseries("star", genre="Science-Fiction", limit=10)
 top = query_kinox(genre="Action", limit=10)
 ```
 
-Use a genre name from BurningSeries's current `/andere-serien` index. Matching is case-insensitive; a keyword can narrow that group. Kinox takes a genre slug and returns its Top 100 in site order. It does not combine genre and keyword search. Captcha requirements can still prevent subsequent playback or downloads.
+Use `fetch_burningseries_genres()` for genre names from BurningSeries's current `/andere-serien` index. Matching is case-insensitive; a keyword can narrow that group. `fetch_kinox_genres()` returns Kinox's current genre names and slugs. Kinox takes a slug and returns its Top 100 in site order. It does not combine genre and keyword search. Captcha requirements can still prevent subsequent playback or downloads.
 
 ## Filmo
 
@@ -111,7 +111,7 @@ results = query_filmo(
 )
 ```
 
-Genre IDs come from Filmo's movie filter; `11` is Horror in the 09/2026 example. Runtime bounds are minutes and country values use the site's two-letter codes. Filters may be omitted or set to `None` / `""`. Keyword search cannot be combined with browse filters.
+`fetch_filmo_genres()` returns genre entries with `name` and `slug`; the slug is the numeric ID accepted by `genre_id`. `11` is Horror in the 09/2026 example. Runtime bounds are minutes and country values use the site's two-letter codes. Filters may be omitted or set to `None` / `""`. Keyword search cannot be combined with browse filters.
 
 The example documents `title_asc`, `title_desc`, `release_desc`, `release_asc`, `rating_desc`, and `rating_asc`. Check the current site when its choices change; the backend does not maintain a fixed option allowlist.
 

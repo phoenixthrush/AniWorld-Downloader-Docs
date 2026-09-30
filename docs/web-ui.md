@@ -86,4 +86,6 @@ The current app has no separate Planned page. Browse rows for new titles are dis
 
 Enable or disable site tabs in Settings. Disabled-by-default sources and current status notes are listed under [Supported Sites](./supported-sites). Available languages and hosters come from each title; changing a preference cannot add a missing stream.
 
-The Web UI's genre browsing currently uses AniWorld. Other sites have [Python genre functions](./genre-search), but those are not automatically exposed as Web UI filters.
+Genre browsing is available for AniWorld, SerienStream, BurningSeries, MegaKino, Kinox, FilmPalast, Filmo, Hanime, and MangaFire. Genre names come from each site's current listing. Moflix has no genre row. Additional filters such as production years and sorting remain available through [Python search functions](./genre-search).
+
+HentaiTV, AnimeIDHentai, and HentaiHaven currently have CLI and Python support only; they do not have site tabs or Web UI search integration.

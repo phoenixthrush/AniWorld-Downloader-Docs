@@ -57,7 +57,7 @@ from aniworld import (
 )
 ```
 
-Additional source-specific classes are available from `aniworld.models`, including `MegaKinoEpisode`, `FilmoEpisode`, `FilmPalastEpisode`, `MoflixEpisode`, `CinebySeries`, `MangaFireToSeries`, `KinoxSeries`, and `BurningSeriesSeries`. Movie-oriented backends may use an `Episode` class for a whole movie.
+Additional source-specific classes are available from `aniworld.models`, including `MegaKinoEpisode`, `FilmoEpisode`, `FilmPalastEpisode`, `MoflixEpisode`, `MangaFireToSeries`, `KinoxSeries`, `BurningSeriesSeries`, `HentaiTVEpisode`, `AnimeIDHentaiEpisode`, `HentaiHavenSeries`, and `HentaiHavenEpisode`. Movie-oriented backends may use an `Episode` class for a whole movie.
 
 ```python
 from aniworld.models import MegaKinoEpisode
@@ -68,6 +68,35 @@ print(movie.title, movie.release_year)
 ```
 
 Use a current URL from the source site in real code. Domains and page formats can change independently of the package.
+
+## Adult-site backends
+
+Keyword search functions return dictionaries with `title`, `url`, `link`, and `poster`. HentaiTV and AnimeIDHentai return episode URLs; HentaiHaven returns title URLs.
+
+```python
+from aniworld.models import AnimeIDHentaiEpisode, HentaiHavenSeries, HentaiTVEpisode
+from aniworld.search import query_animeidhentai, query_hentaihaven, query_hentai_tv
+
+matches = query_animeidhentai("Inaka ni wa Kore kurai", limit=10)
+for item in matches:
+    print(item["title"], item["url"])
+
+# query_hentai_tv("Hamehara", limit=10)
+# query_hentaihaven("Ane wa Yanmama", limit=10)
+
+episode = AnimeIDHentaiEpisode(
+    "https://animeidhentai.com/inaka-ni-wa-kore-kurai-shika-goraku-ga-nai-episode-1"
+)
+print(episode.title_en, episode.provider_data)
+# episode.download()
+
+series = HentaiHavenSeries(
+    "https://hentaihaven.xxx/watch/ane-wa-yanmama-junyuu-chuu/"
+)
+# series.download()
+```
+
+These searches default to `limit=30`. `limit=0` or an empty keyword returns no results without fetching. `limit=None` uses the backend's available search scope rather than promising a full catalogue. The episode models default to `English Sub`; separate subtitle-file extraction is not implemented. See the [CLI examples](./usage#adult-site-backends) for direct downloads and the repository's examples for metadata attributes.
 
 ## More examples
 

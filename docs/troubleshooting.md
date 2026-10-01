@@ -33,11 +33,12 @@ For repeated `403` or captcha failures:
 
 1. Open the source site in a normal browser and confirm it works on your connection.
 2. If the Chromium installation is missing, run `python -m patchright install chromium` with the same Python installation as the app.
-3. Set `ANIWORLD_CAPTCHA_VISIBLE=1` to inspect the browser. Use `ANIWORLD_CAPTCHA_MANUAL=1` if you want to solve challenges yourself.
-4. Set `ANIWORLD_CAPTCHA_DEBUG_LOG=1` for more detail.
-5. Try `ANIWORLD_NO_ADBLOCK=1` if the challenge page stays blank.
+3. Solve image challenges in the Chromium window when using the CLI, or open the CAPTCHA viewer from the running item on the Web UI queue page. Set `ANIWORLD_CAPTCHA_VISIBLE=1` to show a background window, and `ANIWORLD_CAPTCHA_MANUAL=1` to click widgets yourself.
+4. Set `ANIWORLD_CAPTCHA_DEBUG_LOG=1` to log browser errors and failed requests, then turn it off again after troubleshooting. If you need more time to solve a challenge, set `ANIWORLD_CAPTCHA_TIMEOUT` to a positive number of seconds.
 
 Some sites use regional blocks or change their protection without warning.
+
+CAPTCHA verification can still fail. Check the source page in a normal browser on the same connection before retrying.
 
 ### Moflix browse or search returns 403
 

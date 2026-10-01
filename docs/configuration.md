@@ -135,26 +135,25 @@ The Web UI can run a Discord bot beside the server.
 
 The Settings page is the easiest place to configure these values and saves them to `.env`. See [Discord requests](./automation#discord-request-bot) for the workflow.
 
-## Captcha controls
+## Captcha solving
 
-The built-in browser solver works without extra configuration on most systems. These options are mainly for debugging difficult Cloudflare pages.
+The app opens Chromium and tries checkbox challenges, including Turnstile, hCaptcha and reCAPTCHA, plus ALTCHA verification. Image challenges need your input: use the browser window in CLI mode or click the browser screenshot on the Web UI queue page. The defaults require no extra configuration; successful verification still depends on the site and its challenge.
 
-::: details Advanced captcha settings
-| Setting | Purpose |
-| --- | --- |
-| `ANIWORLD_CAPTCHA_MANUAL` | Require your own click instead of automatic solving |
-| `ANIWORLD_CAPTCHA_VISIBLE` | Keep the solving window visible |
-| `ANIWORLD_CAPTCHA_TIMEOUT` | Override the solve timeout in seconds |
-| `ANIWORLD_NO_ADBLOCK` | Disable the solver's network blocker |
-| `ANIWORLD_CAPTCHA_DEBUG_LOG` | Add browser errors to the app log |
-| `ANIWORLD_CAPTCHA_NO_ADTAB_GUARD` | Keep popup ad tabs open |
-| `ANIWORLD_CAPTCHA_NO_OVERLAY_REMOVAL` | Keep full-page ad overlays |
-| `ANIWORLD_CAPTCHA_NO_UA_SYNC` | Do not copy the browser user agent to HTTP requests |
-| `ANIWORLD_SPOOF_WEBGL` | Mask software rendering on GPU-less systems |
-| `ANIWORLD_PERSISTENT_PROFILE` | Reuse a browser profile outside Docker |
-| `ANIWORLD_NO_PERSISTENT_PROFILE` | Use a fresh profile inside Docker |
-| `ANIWORLD_BROWSER_PROFILE` | Custom persistent profile directory |
-| `ANIWORLD_DOCKER` | Force Docker-specific browser behavior |
-:::
+| Setting | Default | Purpose |
+| --- | --- | --- |
+| `ANIWORLD_CAPTCHA_VISIBLE` | `auto` | `auto` shows CLI solving windows and keeps Web UI and background helper windows off-screen. `1` always shows the window; `0` always keeps it off-screen. Chromium remains headed in every mode. |
+| `ANIWORLD_CAPTCHA_TIMEOUT` | Empty | Positive seconds to wait for a solve. Empty, invalid or nonpositive values keep the flow's default: 300 seconds for CAPTCHA/Hanime, 90 for S.to and 30 for Moflix. |
+| `ANIWORLD_CAPTCHA_MANUAL` | `0` | `1` leaves checkbox clicks and ALTCHA verification to you. Completed forms still submit automatically. Use `ANIWORLD_CAPTCHA_VISIBLE=1` if you need to interact with a background helper window. |
+| `ANIWORLD_CAPTCHA_DEBUG_LOG` | `0` | `1` logs browser console warnings/errors, page errors and failed requests to the app log. |
 
-The complete reference is also available in the project's [`.env.example`](https://github.com/phoenixthrush/AniWorld-Downloader/blob/models/src/aniworld/.env.example).
+Set these values in the app's `.env`, or in the Docker service's environment, and restart the app or recreate the container after changing them.
+
+For example, to solve widgets yourself in a visible window and allow ten minutes:
+
+```dotenv
+ANIWORLD_CAPTCHA_VISIBLE=1
+ANIWORLD_CAPTCHA_MANUAL=1
+ANIWORLD_CAPTCHA_TIMEOUT=600
+```
+
+For Web UI or Docker use, leave `ANIWORLD_CAPTCHA_VISIBLE=auto` and interact through the queue's CAPTCHA viewer. A visible window opens on the machine running AniWorld; it does not open on a remote Web UI user's desktop.

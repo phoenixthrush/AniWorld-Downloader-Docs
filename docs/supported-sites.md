@@ -7,7 +7,7 @@ Last checked: **09/2026**. These statuses reflect sampled stream/image checks, n
 | Site | Content | Status | Notes |
 | --- | --- | --- | --- |
 | AniWorld | Anime and anime movies | Working | |
-| SerienStream | Series | Working: captcha required | |
+| SerienStream | Series | CAPTCHA verification required | |
 | MegaKino | Movies and series | Working | |
 | Filmo | Movies | Working | |
 | Moflix | Movies and series | Working | |

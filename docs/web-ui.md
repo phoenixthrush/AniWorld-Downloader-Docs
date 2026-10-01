@@ -68,7 +68,11 @@ Use `--web-force-sso` for SSO-only login. The required environment variables are
 
 ## Captchas
 
-When a queued item needs a captcha, the queue shows an action for it. Some challenges can be handled inside the Web UI. Kinox may require opening the title page and solving its challenge manually before retrying.
+When a running queue item needs a captcha, click its CAPTCHA action to open the browser screenshot. Click the image to interact with the challenge, including widgets inside iframes. Click positions are scaled to the browser screenshot's size. The viewer closes when the attempt finishes, including on timeout or failure. Checkbox challenges are tried automatically by default, while image challenges need your input.
+
+Set `ANIWORLD_CAPTCHA_MANUAL=1` to handle widgets yourself. The browser stays off-screen in the normal Web UI flow, and screenshots remain available even with `ANIWORLD_CAPTCHA_VISIBLE=0`. See [CAPTCHA configuration](./configuration#captcha-solving) for visibility, timeout and debug logging options.
+
+Kinox may require opening the title page and solving its challenge manually before retrying.
 
 ## Settings and persistence
 

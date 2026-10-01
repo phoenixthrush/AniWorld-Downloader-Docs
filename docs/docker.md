@@ -36,10 +36,10 @@ Do not add `-v` to `down` unless you intend to remove named volumes, including t
 | Container path | Supplied Compose storage | Contents |
 | --- | --- | --- |
 | `/app/Downloads` | `./Downloads` on the host | Downloaded media |
-| `/home/aniworld/.aniworld` | `aniworld-data` named volume | `.env`, database, authentication data, custom CSS/shader, and default persistent browser profile |
+| `/home/aniworld/.aniworld` | `aniworld-data` named volume | `.env`, database, authentication data, and custom CSS/shader |
 | `/ms-playwright` | Built into the image | Chromium browser installation |
 
-The browser binary ships in the image; you do not need to download it again into a volume. If you override the browser profile directory, mount that location separately if it should persist.
+The browser binary ships in the image; you do not need to download it again into a volume.
 
 To change where downloads live on the host, change the left side of the download volume mapping. Keep `/app/Downloads` on the container side unless you also change `ANIWORLD_DOWNLOAD_PATH`. Additional custom paths need their own mounts and must use container paths in the Web UI.
 
@@ -68,6 +68,20 @@ env_file:
 After changing the Compose configuration or its environment file, run `docker compose up -d` to apply it. If the values do not refresh, recreate the service with `docker compose up -d --force-recreate`.
 
 Most settings changed through the Web UI last only until the app process restarts. Keep those settings in your deployment configuration. Discord settings saved through the UI are written to the app's `.env`; avoid also setting them in Compose if you want the saved values to control startup.
+
+### CAPTCHA interaction
+
+Use the CAPTCHA action on the running queue item to open the browser screenshot and click the challenge. The container's virtual display handles Chromium; setting `ANIWORLD_CAPTCHA_VISIBLE=1` does not expose that display to your desktop.
+
+For manual widget solving with a longer timeout and browser error logging, add these values to the service's `environment:` block:
+
+```yaml
+  ANIWORLD_CAPTCHA_MANUAL: "1"
+  ANIWORLD_CAPTCHA_TIMEOUT: "600"
+  ANIWORLD_CAPTCHA_DEBUG_LOG: "1"
+```
+
+Leave `ANIWORLD_CAPTCHA_VISIBLE` at `auto` for the normal Docker flow. See [CAPTCHA configuration](./configuration#captcha-solving) for all four controls and their defaults.
 
 ## Build locally
 

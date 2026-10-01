@@ -38,7 +38,7 @@ For repeated `403` or captcha failures:
 
 Some sites use regional blocks or change their protection without warning.
 
-CAPTCHA verification can still fail. Check the source page in a normal browser on the same connection before retrying.
+CAPTCHA verification can still fail. During testing, a German VPN location repeatedly returned Turnstile error `600010` ("Verification failed"). Switching to an Austrian VPN location got past the blocked check and returned the player link for the same episode. If verification keeps failing, try another VPN location or network.
 
 ### Moflix browse or search returns 403
 

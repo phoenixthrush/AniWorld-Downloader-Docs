@@ -33,7 +33,7 @@ curl -H "X-API-Key: YOUR_API_KEY" \
 
 The response has a `results` list with title, URL, and poster information. Site keys include `aniworld`, `sto`, `megakino`, `moflix`, `filmo`, `filmpalast`, `mangafire`, `htv`, `kinox`, and `burningseries`. An implemented backend does not guarantee a currently working source; check the [supported sites](./supported-sites).
 
-Genre browsing uses `GET /api/genres?site=SITE` to list `{name, slug}` entries and `GET /api/genre?site=SITE&slug=SLUG&page=1` to return `results` and `has_more`. Both default to `site=aniworld`. Supported site keys are `aniworld`, `sto`, `burningseries`, `megakino`, `kinox`, `filmpalast`, `filmo`, `htv`, and `mangafire`; Moflix has no genre listing. Filmo and MangaFire use numeric genre IDs as their slugs.
+Genre browsing uses `GET /api/genres?site=SITE` to list `{name, slug}` entries and `GET /api/genre?site=SITE&slug=SLUG&page=1` to return `results` and `has_more`. Both default to `site=aniworld`. Supported site keys are `aniworld`, `sto`, `burningseries`, `megakino`, `kinox`, `filmpalast`, `filmo`, `htv`, `mangafire`, and `moflix`. Filmo and MangaFire use numeric genre IDs as their slugs.
 
 ```bash
 curl -H "X-API-Key: YOUR_API_KEY" \
@@ -46,7 +46,7 @@ curl -H "X-API-Key: YOUR_API_KEY" --get \
   http://localhost:8080/api/genre
 ```
 
-Use a slug returned by the genre list. Each page contains up to 30 results. AniWorld follows the site's pages; other backends are sliced into pages within their available listing scope. See [Genre Search](./genre-search) for those limits and additional Python filters.
+Use a slug returned by the genre list. Each page contains up to 30 results. AniWorld follows the site's pages; other backends are sliced into pages within their available listing scope. Moflix currently returns at most 12 genre recommendations. See [Genre Search](./genre-search) for those limits and additional Python filters.
 
 HentaiTV, AnimeIDHentai, and HentaiHaven have CLI and Python backends, but are not registered as Web UI search sites.
 

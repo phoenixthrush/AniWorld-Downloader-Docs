@@ -11,9 +11,7 @@ python -m pip install -U aniworld
 ```python
 from aniworld import AniworldSeries
 
-series = AniworldSeries(
-    "https://aniworld.to/anime/stream/highschool-dxd"
-)
+series = AniworldSeries("https://aniworld.to/anime/stream/highschool-dxd")
 
 print(series.title)
 print(series.description)
@@ -29,9 +27,7 @@ Use the matching model when you already have a season or episode URL:
 ```python
 from aniworld import AniworldEpisode, AniworldSeason
 
-season = AniworldSeason(
-    "https://aniworld.to/anime/stream/highschool-dxd/staffel-1"
-)
+season = AniworldSeason("https://aniworld.to/anime/stream/highschool-dxd/staffel-1")
 print(season.episode_count)
 
 episode = AniworldEpisode(
@@ -47,7 +43,7 @@ An episode also exposes `provider_data`, `stream_url`, `is_downloaded`, and its 
 
 ## Other sources
 
-The root package exports these stable entry points:
+All public site model classes are available from either `aniworld` or `aniworld.models`:
 
 ```python
 from aniworld import (
@@ -57,10 +53,10 @@ from aniworld import (
 )
 ```
 
-Additional source-specific classes are available from `aniworld.models`, including `MegaKinoEpisode`, `FilmoEpisode`, `FilmPalastEpisode`, `MoflixEpisode`, `MangaFireToSeries`, `KinoxSeries`, `BurningSeriesSeries`, `HentaiTVEpisode`, `AnimeIDHentaiEpisode`, `HentaiHavenSeries`, and `HentaiHavenEpisode`. Movie-oriented backends may use an `Episode` class for a whole movie.
+Other exports include `MegaKinoEpisode`, `FilmoEpisode`, `FilmPalastEpisode`, `MoflixEpisode`, `MangaFireToSeries`, `KinoxSeries`, `BurningSeriesSeries`, `HentaiTVEpisode`, `AnimeIDHentaiEpisode`, `HentaiHavenSeries`, and `HentaiHavenEpisode`. Movie-oriented backends may use an `Episode` class for a whole movie.
 
 ```python
-from aniworld.models import MegaKinoEpisode
+from aniworld import MegaKinoEpisode
 
 movie = MegaKinoEpisode("https://megakino.example/films/example.html")
 print(movie.title, movie.release_year)
@@ -71,10 +67,27 @@ Use a current URL from the source site in real code. Domains and page formats ca
 
 ## Adult-site backends
 
-Keyword search functions return dictionaries with `title`, `url`, `link`, and `poster`. HentaiTV and AnimeIDHentai return episode URLs; HentaiHaven returns title URLs.
+Hanime provides keyword search through `query_hanime`, which defaults to `limit=24`. Results contain `name`, `slug`, `cover_url`, `poster_url`, and `tags`; build a video URL from the slug. Use `HanimeTVEpisode` to download one video, or `HanimeTVSeries` to process its franchise.
 
 ```python
-from aniworld.models import AnimeIDHentaiEpisode, HentaiHavenSeries, HentaiTVEpisode
+from aniworld import HanimeTVEpisode
+from aniworld.search import query_hanime
+
+for item in query_hanime("Reika", limit=10):
+    print(item["name"], "https://hanime.tv/videos/hentai/" + item["slug"])
+
+episode = HanimeTVEpisode(
+    "https://hanime.tv/videos/hentai/reika-wa-karei-na-boku-no-joou-4"
+)
+# episode.download()
+```
+
+Hanime's episode model defaults to `Japanese` and the `HanimeTV` provider. Genre filters and sorting are covered in [Hanime genre search](./genre-search#hanime).
+
+For HentaiTV, AnimeIDHentai, and HentaiHaven, keyword search functions return dictionaries with `title`, `url`, `link`, and `poster`. HentaiTV and AnimeIDHentai return episode URLs; HentaiHaven returns title URLs.
+
+```python
+from aniworld import AnimeIDHentaiEpisode, HentaiHavenSeries, HentaiTVEpisode
 from aniworld.search import query_animeidhentai, query_hentaihaven, query_hentai_tv
 
 matches = query_animeidhentai("Inaka ni wa Kore kurai", limit=10)
@@ -90,13 +103,11 @@ episode = AnimeIDHentaiEpisode(
 print(episode.title_en, episode.provider_data)
 # episode.download()
 
-series = HentaiHavenSeries(
-    "https://hentaihaven.xxx/watch/ane-wa-yanmama-junyuu-chuu/"
-)
+series = HentaiHavenSeries("https://hentaihaven.xxx/watch/ane-wa-yanmama-junyuu-chuu/")
 # series.download()
 ```
 
-These searches default to `limit=30`. `limit=0` or an empty keyword returns no results without fetching. `limit=None` uses the backend's available search scope rather than promising a full catalogue. The episode models default to `English Sub`; separate subtitle-file extraction is not implemented. See the [CLI examples](./usage#adult-site-backends) for direct downloads and the repository's examples for metadata attributes.
+These three searches default to `limit=30`. `limit=0` or an empty keyword returns no results without fetching. `limit=None` uses the backend's available search scope rather than promising a full catalogue. Their episode models default to `English Sub`; separate subtitle-file extraction is not implemented. See the [CLI examples](./usage#adult-site-backends) for direct downloads and the repository's examples for metadata attributes.
 
 ## More examples
 

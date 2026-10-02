@@ -38,7 +38,7 @@ ANIWORLD_AUTOSYNC_CRON="0 3 * * *"
 
 This example runs at 03:00 in the server's local timezone. The settings editor also accepts supported phrases such as `every monday, friday at 10pm` and previews the resulting schedule. For Docker, check the container's timezone rather than assuming it matches the host.
 
-Settings changed in the browser apply to the running process. Save the environment values to keep the feature and its schedule enabled after a restart. There are no current `ANIWORLD_SYNC_SCHEDULE`, `ANIWORLD_SYNC_LANGUAGE`, or `ANIWORLD_SYNC_PROVIDER` settings.
+Settings changed in the browser apply to the running process. Save the environment values to keep the feature and its schedule enabled after a restart.
 
 ## Discord request bot
 

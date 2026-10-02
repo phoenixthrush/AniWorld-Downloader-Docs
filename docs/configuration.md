@@ -25,7 +25,9 @@ ANIWORLD_DOWNLOAD_PATH=Downloads
 | Discord settings saved in the Web UI | `.env` | Yes |
 | Custom CSS and shader | `custom.css`, `custom.frag` | Yes |
 
-**Settings → Administration → Export settings** downloads the current configuration as an `.env` file. Secrets such as the Discord token, OIDC secret, and administrator password are omitted; keep those values when merging the export into your existing configuration.
+**Settings → Administration → Export settings** downloads the configurable Web UI settings as an `.env` file; it is not a complete export of every startup variable. Secrets such as the Discord token, OIDC secret, and administrator password are omitted; keep those values when merging the export into your existing configuration.
+
+AniWorld settings use the `ANIWORLD_` prefix. The MangaFire format setting is `ANIWORLD_MANGAFIRE_FORMAT`; an older app `.env` is migrated automatically. OS and dependency variables such as `PATH`, `DISPLAY`, `XDG_CACHE_HOME`, `APPDATA`, `LOCALAPPDATA`, `PLAYWRIGHT_BROWSERS_PATH`, `PLAYWRIGHT_NODEJS_PATH`, `SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, and `WERKZEUG_RUN_MAIN` keep the names required by those systems. They are not AniWorld settings.
 
 Existing process environment variables override values loaded from `.env`. CLI options override the corresponding settings for that invocation. Restart after editing startup configuration.
 
@@ -44,10 +46,12 @@ Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. R
 | `ANIWORLD_DISABLE_ENGLISH_SUB` | `0` | Hide and block English subtitles |
 | `ANIWORLD_MOVIE_FOLDER` | `1` | Put each movie in its own folder |
 | `ANIWORLD_VIDEO_CODEC` | `copy` | Copy streams, or encode using a supported software/hardware codec |
-| `MANGAFIRE_FORMAT` | `jpg` | Chapter images (`jpg`) or comic archive (`cbz`) |
+| `ANIWORLD_MANGAFIRE_FORMAT` | `jpg` | Chapter images (`jpg`) or comic archive (`cbz`) |
 | `ANIWORLD_NO_AUTO_INSTALL` | `0` | Disable automatic dependency downloads and installation |
 | `ANIWORLD_HLS_CONCURRENCY` | `8` | Parallel HLS segments, from `1` to `32` |
 | `ANIWORLD_DEBUG_MODE` | `0` | Enable detailed logging |
+| `ANIWORLD_NO_MENU` | `0` | Skip the CLI menu; supply URLs or an episode file |
+| `ANIWORLD_ENABLE_LIBRARY` | `1` | Show the Web UI Library tab |
 
 Boolean values use `1` for on and `0` for off.
 
@@ -59,7 +63,7 @@ The default naming template is:
 ANIWORLD_NAMING_TEMPLATE="{title} ({year}) [imdbid-{imdbid}]/Season {season}/{title} S{season}E{episode}.mkv"
 ```
 
-Available placeholders are `{title}`, `{year}`, `{imdbid}`, `{season}`, `{episode}`, and `{language}`. Older `%title%` style placeholders are supported too. The file extension controls the output container. The Web UI's MKV/MP4 setting changes that extension in the running naming template; persist the template to keep it across restarts.
+Available placeholders are `{title}`, `{year}`, `{imdbid}`, `{season}`, `{episode}`, `{resolution}`, and `{language}`. `{resolution}` comes from the finished file and falls back to `unknown` if there is not exactly one video stream. Older `%title%` style placeholders are supported too. The file extension controls the output container. The Web UI's MKV/MP4 setting changes that extension in the running naming template; persist the template to keep it across restarts.
 
 `copy` avoids re-encoding. Software codec choices include `h264`, `h265`, and `av1`; hardware options include `h264_nvenc`, `hevc_nvenc`, `h264_amf`, `hevc_amf`, `av1_amf`, `h264_qsv`, `hevc_qsv`, and `av1_qsv`. These require a compatible FFmpeg build and, for hardware encoding, the corresponding device and drivers.
 
@@ -72,14 +76,25 @@ Model-specific naming can differ, particularly for manga and movies. Use **Setti
 | `ANIWORLD_RANDOM_ANIME` | `0` | Choose a random anime |
 | `ANIWORLD_USE_STO_SEARCH` | `0` | Prefer SerienStream for interactive search |
 | `ANIWORLD_ANISKIP` | `0` | Skip intros and outros when timing data exists |
-| `ANIWORLD_KEEP_WATCHING` | `0` | Continue playback after an episode |
-| `ANIWORLD_ENABLE_HTV` | `0` | Enable Hanime support |
+| `ANIWORLD_KEEP_WATCHING` | `0` | CLI Watch/Syncplay: continue from an episode URL through the rest of its season |
+| `ANIWORLD_ENABLE_HTV` | `0` | Show Hanime's (`hanime.tv`) Web UI tab |
 | `ANIWORLD_ENABLE_KINOX` | `0` | Enable Kinox support |
 | `ANIWORLD_ENABLE_BURNINGSERIES` | `0` | Enable BurningSeries support |
 | `ANIWORLD_KINOX_DOMAIN` | Empty, uses `kinox.to` | Override the Kinox hostname, without `https://` |
-| `ANIWORLD_USE_IINA` | `1` | Use IINA for Syncplay on macOS; use `0` for mpv |
+| `ANIWORLD_USE_IINA` | `1` | Use IINA for ordinary watching on macOS; use `0` for mpv. Syncplay always uses mpv |
 
 Site toggles control Web UI visibility. See [Supported Sites](./supported-sites) for every toggle and disabled default. They are not a guarantee that a backend works, and do not remove it from the Python package.
+
+## Syncplay
+
+| Setting | Default | Purpose |
+| --- | --- | --- |
+| `ANIWORLD_SYNCPLAY_HOST` | Empty, uses `syncplay.pl:8998` | Server hostname and port |
+| `ANIWORLD_SYNCPLAY_ROOM` | Empty | Join this room, or generate one from the episode filename |
+| `ANIWORLD_SYNCPLAY_USERNAME` | Empty, uses your system username | Display name |
+| `ANIWORLD_SYNCPLAY_PASSWORD` | Empty | Hash the episode filename with this value to derive a private room name; ignored when a room is specified |
+
+The password changes the generated room name; it is not a Syncplay server authentication password. CLI Syncplay flags override these values for that invocation.
 
 ## Auto-Sync
 

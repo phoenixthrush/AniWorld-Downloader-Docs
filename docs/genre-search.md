@@ -1,6 +1,6 @@
 # Genre Search in Python
 
-Genre filters are optional backend arguments, and support differs by source. The Web UI and [HTTP API](./http-api#search) also expose genre browsing for the nine sites below. Additional filters and sorting described here are Python options. The repository's [genre examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples) show each site's result fields and sample options.
+Genre filters are optional backend arguments, and support differs by source. The Web UI and [HTTP API](./http-api#search) also expose genre browsing for the ten sites below. Additional filters and sorting described here are Python options. The repository's [genre examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples) show each site's result fields and sample options.
 
 ## Result limits
 
@@ -17,7 +17,7 @@ Most functions default to `None`; Hanime defaults to `24` and MangaFire to `20`.
 
 There is no fixed genre allowlist shared by the sites. Depending on the backend, the app reads tags from a live page/API or sends your slug or ID to the site. Example comments marked **09/2026 as of right now** are snapshots, not validation rules.
 
-Discovery helpers are available for all nine sites in the table: `fetch_genres`, `fetch_s_to_genres`, `fetch_burningseries_genres`, `fetch_kinox_genres`, `fetch_filmpalast_genres`, `fetch_megakino_genres`, and `fetch_filmo_genres` in `aniworld.search`, plus `fetch_hanime_genres` and `fetch_mangafire_genres` in their backend modules. BurningSeries reads its runtime index, which is cached for the process lifetime. Other browse data may also be cached, so runtime discovery does not mean every call downloads a fresh list.
+Discovery helpers are available for all ten sites in the table: `fetch_aniworld_genres`, `fetch_s_to_genres`, `fetch_burningseries_genres`, `fetch_kinox_genres`, `fetch_filmpalast_genres`, `fetch_megakino_genres`, and `fetch_filmo_genres` plus `fetch_hanime_genres`, `fetch_mangafire_genres`, and `fetch_moflix_genres`, all in `aniworld.search`. BurningSeries reads its runtime index, which is cached for the process lifetime. Other browse data may also be cached, so runtime discovery does not mean every call downloads a fresh list.
 
 An unavailable genre may raise an HTTP error or `ValueError`, depending on the backend. A site that returns a successful empty page can produce an empty result instead. Handle those outcomes in your application.
 
@@ -25,30 +25,32 @@ An unavailable genre may raise an HTTP error or `ValueError`, depending on the b
 
 | Site | Function | Genre and other filters | Scope with `limit=None` |
 | --- | --- | --- | --- |
-| AniWorld | `fetch_genre_animes` | `slug`, `page` | One page, with `has_more` |
+| AniWorld | `query_aniworld` | `genre` | Follows genre result pages |
 | SerienStream | `query_s_to` | `genre`, `fsk`, `prod_start`, `prod_end`, `sort` | Follows genre result pages |
 | BurningSeries | `query_burningseries` | `genre`, optional keyword | Matching entries in the cached index |
 | Kinox | `query_kinox` | `genre` | Genre Top 100 |
 | FilmPalast | `query_filmpalast` | `genre` | First genre page |
 | MegaKino | `query_megakino` | `genre` | First genre page |
-| Filmo | `query_filmo` | `genre_id`, `year`, `runtime_min`, `runtime_max`, `country`, `sort` | Follows browse result pages |
-| Hanime | `search_hanime` | `genre`, `sort`, optional keyword | First genre page |
-| MangaFire | `search_series` | `genre`, `sort`, optional keyword | Follows result pages |
+| Filmo | `query_filmo` | `genre`, `year`, `runtime_min`, `runtime_max`, `country`, `sort` | Follows browse result pages |
+| Hanime | `query_hanime` | `genre`, `sort`, optional keyword | First genre page |
+| MangaFire | `query_mangafire` | `genre`, `sort`, optional keyword | Follows result pages |
+| Moflix | `query_moflix` | `genre` | One recommendation response |
 
-The first seven functions are in `aniworld.search`. Hanime uses `aniworld.extractors.provider.hanime_tv`; MangaFire uses `aniworld.models.mangafire_to.series`. Moflix does not currently have a matching genre-filter function.
+All functions in this table are available from `aniworld.search`. The older backend-specific Hanime and MangaFire functions remain available for existing integrations. Genre discovery returns `name` and `slug` entries for every site. MangaFire also retains the numeric `id`.
 
 ## AniWorld
 
 ```python
-from aniworld.search import fetch_genres, fetch_genre_animes
+from aniworld.search import fetch_aniworld_genres, query_aniworld, fetch_genre_animes
 
-print(fetch_genres())
+print(fetch_aniworld_genres())
+print(query_aniworld(genre="action", limit=10))
 page = fetch_genre_animes("action", page=1, limit=10)
 print(page["results"])
 print(page["has_more"])
 ```
 
-The limit only caps that page's returned results. `has_more` describes the site's next page, not whether the limit hid more entries on the current one.
+`query_aniworld` returns a list, like the other query functions. Use `fetch_genre_animes` for a single page with pagination metadata; its limit only caps that page's returned results. `fetch_genres` remains an alias for genre discovery. `has_more` describes the site's next page, not whether the limit hid more entries on the current one.
 
 ## SerienStream
 
@@ -101,7 +103,7 @@ Use `fetch_burningseries_genres()` for genre names from BurningSeries's current 
 from aniworld.search import query_filmo
 
 results = query_filmo(
-    genre_id=11,
+    genre=11,
     year=2020,
     runtime_min=90,
     runtime_max=120,
@@ -111,17 +113,17 @@ results = query_filmo(
 )
 ```
 
-`fetch_filmo_genres()` returns genre entries with `name` and `slug`; the slug is the numeric ID accepted by `genre_id`. `11` is Horror in the 09/2026 example. Runtime bounds are minutes and country values use the site's two-letter codes. Filters may be omitted or set to `None` / `""`. Keyword search cannot be combined with browse filters.
+`fetch_filmo_genres()` returns genre entries with `name` and `slug`; the slug is the numeric ID accepted by `genre`. `genre_id` remains supported as an alias. `11` is Horror in the 09/2026 example. Runtime bounds are minutes and country values use the site's two-letter codes. Filters may be omitted or set to `None` / `""`. Keyword search cannot be combined with browse filters.
 
 The example documents `title_asc`, `title_desc`, `release_desc`, `release_asc`, `rating_desc`, and `rating_asc`. Check the current site when its choices change; the backend does not maintain a fixed option allowlist.
 
 ## Hanime
 
 ```python
-from aniworld.extractors.provider.hanime_tv import fetch_hanime_genres, search_hanime
+from aniworld.search import fetch_hanime_genres, query_hanime
 
 print(fetch_hanime_genres())
-results = search_hanime(genre="fantasy", sort="views_desc", limit=10)
+results = query_hanime(genre="fantasy", sort="views_desc", limit=10)
 for item in results:
     print(item["name"], item["slug"])
 ```
@@ -131,12 +133,26 @@ Sorting requires a genre. The 09/2026 example lists `created_at_asc`, `released_
 ## MangaFire
 
 ```python
-from aniworld.models.mangafire_to.series import fetch_mangafire_genres, search_series
+from aniworld.search import fetch_mangafire_genres, query_mangafire
 
 genres = fetch_mangafire_genres()
-results = search_series("dragon", genre="Fantasy", sort="score:desc", limit=10)
+results = query_mangafire("dragon", genre="Fantasy", sort="score:desc", limit=10)
 for item in results:
     print(item["title"], item["url"])
 ```
 
 Use a current genre name or an ID from `fetch_mangafire_genres()`. The backend resolves it against live filter options. Sorting uses `field:direction`, such as `title:asc`, `score:desc`, or `chapter_updated_at:desc`. Returned URLs can be relative; join them to `https://mangafire.to` if needed.
+
+## Moflix
+
+```python
+from aniworld.search import fetch_moflix_genres, query_moflix
+
+genres = fetch_moflix_genres()
+if genres:
+    results = query_moflix(genre=genres[0]["slug"], limit=10)
+    for item in results:
+        print(item["title"], item["url"])
+```
+
+Moflix uses its public genre recommendation API. Keyword and genre queries are separate. `limit=None` keeps that API's default response size; it does not fetch the entire catalogue. The site currently caps genre recommendations at 12 titles, including when you request a larger limit.

@@ -45,17 +45,20 @@ The selected provider is tried first. If it fails, the configured fallback order
 
 ## Adult-site backends
 
-HentaiTV, AnimeIDHentai, and HentaiHaven URLs can be downloaded directly, without a Web UI site tab:
+Hanime, HentaiTV, AnimeIDHentai, and HentaiHaven support direct CLI downloads:
 
 ```bash
+aniworld --no-menu "https://hanime.tv/videos/hentai/reika-wa-karei-na-boku-no-joou-4"
 aniworld --no-menu "https://animeidhentai.com/inaka-ni-wa-kore-kurai-shika-goraku-ga-nai-episode-1"
 aniworld --no-menu "https://hentaihaven.xxx/watch/ane-wa-yanmama-junyuu-chuu/"
 aniworld --no-menu "https://hentai.tv/hentai/hamehara-sore-sekuhara-desu-episode-1-p83"
 ```
 
-HentaiHaven title URLs process the title's episodes; the other two backends accept episode URLs. These models default to `English Sub` and use their own site provider. That preset describes the model's stream selection; the downloader does not currently fetch or mux separate `.srt` files from HentaiTV or AnimeIDHentai. Do not assume every saved video contains subtitles.
+Hanime video URLs download the selected video, like other episode URLs. Use `HanimeTVSeries` through the [Python API](./python-api#adult-site-backends) to process the whole franchise. Hanime also has a Web UI tab, disabled by default; enable it with `ANIWORLD_ENABLE_HTV=1`. Its episode model defaults to `Japanese` and the `HanimeTV` provider.
 
-Keyword search is available through the [Python API](./python-api#adult-site-backends), rather than a dedicated CLI search flag.
+HentaiTV, AnimeIDHentai, and HentaiHaven have CLI and Python support without Web UI tabs. HentaiHaven title URLs process the title's episodes; HentaiTV and AnimeIDHentai accept episode URLs. These three models default to `English Sub` and use their own site provider. That preset describes the model's stream selection; the downloader does not currently fetch or mux separate `.srt` files from HentaiTV or AnimeIDHentai. Do not assume every saved video contains subtitles.
+
+All four backends offer keyword search through the [Python API](./python-api#adult-site-backends). Hanime also supports search in its Web UI tab; there is no dedicated CLI search flag for these sites.
 
 ## Useful options
 
@@ -68,7 +71,7 @@ Keyword search is available through the [Python API](./python-api#adult-site-bac
 | `-o`, `--output` | Set the download location |
 | `-f`, `--episode-file` | Read one URL per line from a file |
 | `-sk`, `--aniskip` | Skip detected intros and outros during playback |
-| `-kw`, `--keep-watching` | Continue to the next episode |
+| `-kw`, `--keep-watching` | Continue from an episode URL through the rest of its season |
 | `-r`, `--random-anime` | Pick a random AniWorld title |
 | `-sto`, `--use-sto-search` | Prefer SerienStream in interactive search |
 | `-A`, `--anime4k` | Install `High` or `Low` shaders, or `Remove` them |
@@ -96,7 +99,7 @@ aniworld --action Syncplay \
   "URL"
 ```
 
-Add `--syncplay-password` when the Syncplay server requires a password. If no room is supplied, AniWorld Downloader creates a room name from the episode.
+When no room is supplied, AniWorld Downloader creates one from the episode filename. `--syncplay-password` hashes that filename with your value to derive the room name; it does not authenticate to the Syncplay server and is ignored with an explicit room. See [Syncplay configuration](./configuration#syncplay) for the environment settings.
 
 ## Direct provider URL
 
@@ -116,7 +119,7 @@ aniworld --no-menu --output "/path/to/downloads" "URL"
 
 Use the [naming template](./configuration#file-names) to control folders, filenames, and the MKV/MP4 extension. `ANIWORLD_VIDEO_CODEC=copy` preserves the original streams without re-encoding. Multi-language muxing examples are available in the repository's [AniWorld examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples/aniworld_to) and [SerienStream examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples/s_to).
 
-For manga, set `MANGAFIRE_FORMAT=jpg` for individual images or `cbz` for an archive. Manga chapters are downloads, not video-player inputs.
+For manga, set `ANIWORLD_MANGAFIRE_FORMAT=jpg` for individual images or `cbz` for an archive. Manga chapters are downloads, not video-player inputs.
 
 ## Playback enhancements
 

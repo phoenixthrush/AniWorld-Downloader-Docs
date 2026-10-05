@@ -56,9 +56,9 @@ aniworld --no-menu "https://hentai.tv/hentai/hamehara-sore-sekuhara-desu-episode
 
 Hanime video URLs download the selected video, like other episode URLs. Use `HanimeTVSeries` through the [Python API](./python-api#adult-site-backends) to process the whole franchise. Hanime also has a Web UI tab, disabled by default; enable it with `ANIWORLD_ENABLE_HTV=1`. Its episode model defaults to `Japanese` and the `HanimeTV` provider.
 
-HentaiTV, AnimeIDHentai, and HentaiHaven have CLI and Python support without Web UI tabs. HentaiHaven title URLs process the title's episodes; HentaiTV and AnimeIDHentai accept episode URLs. These three models default to `English Sub` and use their own site provider. That preset describes the model's stream selection; the downloader does not currently fetch or mux separate `.srt` files from HentaiTV or AnimeIDHentai. Do not assume every saved video contains subtitles.
+HentaiTV and HentaiHaven also have optional Web UI search and download tabs, enabled with `ANIWORLD_ENABLE_HENTAITV=1` and `ANIWORLD_ENABLE_HENTAIHAVEN=1`. AnimeIDHentai supports CLI and Python only. HentaiHaven title URLs process the title's episodes; HentaiTV and AnimeIDHentai accept episode URLs. These three models default to `English Sub` and use their own site provider. That preset describes the model's stream selection. HentaiTV and AnimeIDHentai do not fetch separate subtitle files. HentaiHaven fetches an English WebVTT track when its master playlist provides one and muxes it into newly downloaded MKV/MP4 files. Missing tracks or subtitle-processing errors leave the video without that added track; existing files are skipped. Do not assume every saved video contains subtitles.
 
-All four backends offer keyword search through the [Python API](./python-api#adult-site-backends). Hanime also supports search in its Web UI tab; there is no dedicated CLI search flag for these sites.
+All four backends offer keyword search through the [Python API](./python-api#adult-site-backends). Hanime, HentaiTV, and HentaiHaven also support search in their Web UI tabs; there is no dedicated CLI search flag for these sites.
 
 ## Useful options
 
@@ -86,7 +86,7 @@ All four backends offer keyword search through the [Python API](./python-api#adu
 | `-wN`, `--no-browser` | Do not open a browser automatically |
 | `-wE`, `--web-expose` | Listen on every network interface |
 | `-wA`, `--web-auth` | Enable local accounts |
-| `-wS`, `--web-sso` | Enable the OIDC login option |
+| `-wS`, `--web-sso` | Enable OIDC alongside `--web-auth` |
 | `-wFS`, `--web-force-sso` | Allow only OIDC login |
 
 ## Syncplay options
@@ -117,7 +117,7 @@ The media is written to `input.mkv` in the configured download folder.
 aniworld --no-menu --output "/path/to/downloads" "URL"
 ```
 
-Use the [naming template](./configuration#file-names) to control folders, filenames, and the MKV/MP4 extension. `ANIWORLD_VIDEO_CODEC=copy` preserves the original streams without re-encoding. Multi-language muxing examples are available in the repository's [AniWorld examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples/aniworld_to) and [SerienStream examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples/s_to).
+Use the [naming template](./configuration#file-names) to control folders, filenames, and the MKV/MP4 extension. `ANIWORLD_VIDEO_CODEC=copy` preserves the original streams without re-encoding. Direct HTTP downloads, including HentaiTV and AnimeIDHentai, copy the source video regardless of the encoding preference. Multi-language muxing examples are available in the repository's [AniWorld examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples/aniworld_to) and [SerienStream examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples/s_to).
 
 For manga, set `ANIWORLD_MANGAFIRE_FORMAT=jpg` for individual images or `cbz` for an archive. Manga chapters are downloads, not video-player inputs.
 
@@ -125,7 +125,7 @@ For manga, set `ANIWORLD_MANGAFIRE_FORMAT=jpg` for individual images or `cbz` fo
 
 `--aniskip` uses available AniSkip timing data to skip openings and endings. It depends on matching metadata and timing availability; it is not a universal skip detector for every site.
 
-`--anime4k High`, `--anime4k Low`, and `--anime4k Remove` manage the Anime4K shaders used for playback. They do not upscale the saved video file. Choose the shader level according to your playback hardware.
+`--anime4k High`, `--anime4k Low`, and `--anime4k Remove` manage the Anime4K shaders used for playback. They do not upscale the saved video file. Choose the shader level according to your playback hardware. This option configures shaders and then continues with the selected action; it does not exit. Combine it with a Watch/Syncplay URL, or expect the normal interactive flow when no URL is supplied.
 
 ## Automating commands
 

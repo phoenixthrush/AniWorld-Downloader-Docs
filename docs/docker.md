@@ -105,4 +105,4 @@ The build downloads dependencies and browser files. It can take longer than star
 
 The service listens on container port `8080`, which Compose publishes on the host. To restrict it to the host machine, use `127.0.0.1:8080:8080` as the port mapping.
 
-For access from other users or networks, enable [authentication](./web-ui#local-accounts). For a public domain, use an HTTPS reverse proxy and set `ANIWORLD_WEB_BASE_URL` to the external address. See [Configuration](./configuration) for OIDC settings and [Troubleshooting](./troubleshooting) for filesystem or captcha problems.
+For access from other users or networks, enable [authentication](./web-ui#local-accounts). For a public domain, use an HTTPS reverse proxy and set `ANIWORLD_WEB_BASE_URL` to the external address. Configure the [trusted proxy address](./configuration#https-reverse-proxy) when forwarding client IPs and HTTPS information. See [Configuration](./configuration) for OIDC settings and [Troubleshooting](./troubleshooting) for filesystem or captcha problems.

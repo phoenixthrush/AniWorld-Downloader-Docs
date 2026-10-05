@@ -29,7 +29,7 @@ ANIWORLD_DOWNLOAD_PATH=Downloads
 
 AniWorld settings use the `ANIWORLD_` prefix. The MangaFire format setting is `ANIWORLD_MANGAFIRE_FORMAT`; an older app `.env` is migrated automatically. OS and dependency variables such as `PATH`, `DISPLAY`, `XDG_CACHE_HOME`, `APPDATA`, `LOCALAPPDATA`, `PLAYWRIGHT_BROWSERS_PATH`, `PLAYWRIGHT_NODEJS_PATH`, `SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, and `WERKZEUG_RUN_MAIN` keep the names required by those systems. They are not AniWorld settings.
 
-Existing process environment variables override values loaded from `.env`. CLI options override the corresponding settings for that invocation. Restart after editing startup configuration.
+Existing process environment variables override values loaded from `.env`. CLI options override the corresponding settings for that invocation. A relative `--output` path is resolved from the current working directory; a relative `ANIWORLD_DOWNLOAD_PATH` is normally resolved beneath your home directory. Restart after editing startup configuration.
 
 Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. Relative values are resolved against your home directory. On first relocation, the app can copy the old `.env`; it does not migrate the database or theme files. Move those separately with the app stopped if you want to retain them.
 
@@ -42,18 +42,23 @@ Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. R
 | `ANIWORLD_PROVIDER` | `VOE` | Preferred stream host |
 | `ANIWORLD_PROVIDER_FALLBACK_ORDER` | `VOE,Vidmoly,Vidoza,Doodstream` | Hosts to try when the preferred one fails |
 | `ANIWORLD_UI_LANGUAGE` | `en` | Web UI language: `en` or `de` |
-| `ANIWORLD_LANG_SEPARATION` | `0` | Put downloads into language folders |
-| `ANIWORLD_DISABLE_ENGLISH_SUB` | `0` | Hide and block English subtitles |
+| `ANIWORLD_LANG_SEPARATION` | `0` | Put Web UI queue downloads into language folders |
+| `ANIWORLD_DISABLE_ENGLISH_SUB` | `0` | Hide English Sub choices and reject them in Web UI/API submissions |
+| `ANIWORLD_SHOW_ALL_LANGUAGES` | `0` | Offer every preset for the site instead of restricting choices to the first-episode probe |
 | `ANIWORLD_MOVIE_FOLDER` | `1` | Put each movie in its own folder |
 | `ANIWORLD_VIDEO_CODEC` | `copy` | Copy streams, or encode using a supported software/hardware codec |
 | `ANIWORLD_MANGAFIRE_FORMAT` | `jpg` | Chapter images (`jpg`) or comic archive (`cbz`) |
-| `ANIWORLD_NO_AUTO_INSTALL` | `0` | Disable automatic dependency downloads and installation |
+| `ANIWORLD_NO_AUTO_INSTALL` | `0` | Disable the normal dependency-install prompts, browser installation, and package-manager installs |
 | `ANIWORLD_HLS_CONCURRENCY` | `8` | Parallel HLS segments, from `1` to `32` |
 | `ANIWORLD_DEBUG_MODE` | `0` | Enable detailed logging |
 | `ANIWORLD_NO_MENU` | `0` | Skip the CLI menu; supply URLs or an episode file |
 | `ANIWORLD_ENABLE_LIBRARY` | `1` | Show the Web UI Library tab |
 
 Boolean values use `1` for on and `0` for off.
+
+`ANIWORLD_NO_AUTO_INSTALL=1` is not a network-offline mode: portable release lookup can still contact GitHub before the install decision, and internal binary fetches that bypass the prompt are not covered by that guard.
+
+Language separation is applied through the Web UI queue path resolver, including Discord requests; direct CLI/Python downloads do not use that resolver. The English Sub restriction is not enforced by direct CLI/Python downloads, Discord requests, or Auto-Sync, and does not apply to the fixed-language HentaiTV/HentaiHaven backends.
 
 ## File names
 
@@ -63,11 +68,11 @@ The default naming template is:
 ANIWORLD_NAMING_TEMPLATE="{title} ({year}) [imdbid-{imdbid}]/Season {season}/{title} S{season}E{episode}.mkv"
 ```
 
-Available placeholders are `{title}`, `{year}`, `{imdbid}`, `{season}`, `{episode}`, `{resolution}`, and `{language}`. `{resolution}` comes from the finished file and falls back to `unknown` if there is not exactly one video stream. Older `%title%` style placeholders are supported too. The file extension controls the output container. The Web UI's MKV/MP4 setting changes that extension in the running naming template; persist the template to keep it across restarts.
+Available placeholders are `{title}`, `{year}`, `{imdbid}`, `{season}`, `{episode}`, `{resolution}`, and `{language}`. AniWorld, SerienStream, and Hanime can fill `{resolution}` from the finished file; it falls back to `unknown` when there is not exactly one video stream. Other formatters can leave it as `unknown`. Use brace placeholders throughout the template; legacy `%title%` placeholders are only translated by some filename formatters, not consistently in folder names. The file extension controls the output container. The Web UI's MKV/MP4 setting changes that extension in the running naming template; persist the template to keep it across restarts.
 
 `copy` avoids re-encoding. Software codec choices include `h264`, `h265`, and `av1`; hardware options include `h264_nvenc`, `hevc_nvenc`, `h264_amf`, `hevc_amf`, `av1_amf`, `h264_qsv`, `hevc_qsv`, and `av1_qsv`. These require a compatible FFmpeg build and, for hardware encoding, the corresponding device and drivers.
 
-Model-specific naming can differ, particularly for manga and movies. Use **Settings → path preview** or the Python model's path attributes to inspect the result before a large batch.
+Model-specific naming can differ, particularly for manga and movies. MegaKino and Moflix use their own folder/filename patterns and read the template extension rather than honoring every placeholder. Keep `SxxEyy` or `SxxEyyy` episode markers and matching title folders for Library and Auto-Sync recognition. Root-level movies saved with `ANIWORLD_MOVIE_FOLDER=0` are not listed by the current Library scanner. Use **Settings → path preview** or the Python model's path attributes to inspect the result before a large batch.
 
 ## Sources and playback
 
@@ -78,6 +83,8 @@ Model-specific naming can differ, particularly for manga and movies. Use **Setti
 | `ANIWORLD_ANISKIP` | `0` | Skip intros and outros when timing data exists |
 | `ANIWORLD_KEEP_WATCHING` | `0` | CLI Watch/Syncplay: continue from an episode URL through the rest of its season |
 | `ANIWORLD_ENABLE_HTV` | `0` | Show Hanime's (`hanime.tv`) Web UI tab |
+| `ANIWORLD_ENABLE_HENTAITV` | `0` | Show HentaiTV's (`hentai.tv`) Web UI tab |
+| `ANIWORLD_ENABLE_HENTAIHAVEN` | `0` | Show HentaiHaven's (`hentaihaven.xxx`) Web UI tab |
 | `ANIWORLD_ENABLE_KINOX` | `0` | Enable Kinox support |
 | `ANIWORLD_ENABLE_BURNINGSERIES` | `0` | Enable BurningSeries support |
 | `ANIWORLD_KINOX_DOMAIN` | Empty, uses `kinox.to` | Override the Kinox hostname, without `https://` |
@@ -116,11 +123,11 @@ ANIWORLD_WEB_ADMIN_USER=admin
 ANIWORLD_WEB_ADMIN_PASS=change-this-password
 ```
 
-Authentication modes can also be set through `ANIWORLD_WEB_AUTH`, `ANIWORLD_WEB_SSO`, and `ANIWORLD_WEB_FORCE_SSO`.
+Authentication modes can also be set through `ANIWORLD_WEB_AUTH`, `ANIWORLD_WEB_SSO`, and `ANIWORLD_WEB_FORCE_SSO`. For local accounts plus SSO, set both `ANIWORLD_WEB_AUTH=1` and `ANIWORLD_WEB_SSO=1`. SSO alone does not enable authentication; forced SSO enables both.
 
 ### OIDC single sign-on
 
-Install `aniworld[sso]`, then use `aniworld -w -wS` to offer SSO beside local accounts, or `aniworld -w -wFS` for SSO only. Register `https://aniworld.example.com/oidc/callback` as the redirect URI at your identity provider, replacing the origin with your public app URL.
+Install `aniworld[sso]`, then use `aniworld -w -wA -wS` to offer SSO beside local accounts, or `aniworld -w -wFS` for SSO only. Register `https://aniworld.example.com/oidc/callback` as the redirect URI at your identity provider, replacing the origin with your public app URL.
 
 ```dotenv
 ANIWORLD_WEB_BASE_URL=https://aniworld.example.com
@@ -131,7 +138,15 @@ ANIWORLD_OIDC_DISPLAY_NAME=SSO
 ANIWORLD_OIDC_ADMIN_SUBJECT=
 ```
 
-`ANIWORLD_OIDC_ADMIN_SUBJECT` is the preferred way to promote one SSO user to administrator. The older `ANIWORLD_OIDC_ADMIN_USER` setting is also supported.
+`ANIWORLD_OIDC_ADMIN_SUBJECT` matches the identity provider's subject (`sub`) to promote an SSO user to administrator. The older `ANIWORLD_OIDC_ADMIN_USER` matches the display username. Currently either match grants admin access, even when both settings are supplied; leave the username setting empty when using a subject. If no admin exists, the first successful SSO login becomes admin even when a different subject is configured. Restrict access at the identity provider during initial setup.
+
+Set the issuer, client ID, and client secret before enabling SSO-only login. Missing OIDC values can leave an environment-configured SSO-only instance without a working login method; the CLI force flag rejects missing values. A missing SSO dependency aborts startup when SSO is forced.
+
+### HTTPS reverse proxy
+
+Set `ANIWORLD_WEB_BASE_URL` to the external origin, for example `https://aniworld.example.com`, for redirects and secure session cookies. `ANIWORLD_WEB_TRUSTED_PROXY` accepts the address of the proxy directly connected to Waitress; it trusts one proxy hop for `X-Forwarded-For` and `X-Forwarded-Proto`. Without it, forwarded headers are not trusted. This matters for client-IP login throttling as well as HTTPS detection.
+
+Use the actual proxy address and prevent direct public access to the backend. The current setting supports one hop, so account for that when deploying multiple proxies.
 
 ## Discord bot
 

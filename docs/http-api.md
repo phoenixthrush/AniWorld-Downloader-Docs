@@ -31,7 +31,7 @@ curl -H "X-API-Key: YOUR_API_KEY" \
   http://localhost:8080/api/search
 ```
 
-The response has a `results` list with title, URL, and poster information. Site keys include `aniworld`, `sto`, `megakino`, `moflix`, `filmo`, `filmpalast`, `mangafire`, `htv`, `kinox`, and `burningseries`. An implemented backend does not guarantee a currently working source; check the [supported sites](./supported-sites).
+The response has a `results` list with title, URL, and poster information. Site keys include `aniworld`, `sto`, `megakino`, `moflix`, `filmo`, `filmpalast`, `mangafire`, `htv`, `hentaitv`, `hentaihaven`, `kinox`, and `burningseries`. An implemented backend does not guarantee a currently working source; check the [supported sites](./supported-sites).
 
 Genre browsing uses `GET /api/genres?site=SITE` to list `{name, slug}` entries and `GET /api/genre?site=SITE&slug=SLUG&page=1` to return `results` and `has_more`. Both default to `site=aniworld`. Supported site keys are `aniworld`, `sto`, `burningseries`, `megakino`, `kinox`, `filmpalast`, `filmo`, `htv`, `mangafire`, and `moflix`. Filmo and MangaFire use numeric genre IDs as their slugs.
 
@@ -46,9 +46,9 @@ curl -H "X-API-Key: YOUR_API_KEY" --get \
   http://localhost:8080/api/genre
 ```
 
-Use a slug returned by the genre list. Each page contains up to 30 results. AniWorld follows the site's pages; other backends are sliced into pages within their available listing scope. Moflix currently returns at most 12 genre recommendations. See [Genre Search](./genre-search) for those limits and additional Python filters.
+Use a slug returned by the genre list. Each page contains up to 30 results. AniWorld follows the site's pages; other backends are sliced into pages within their available listing scope. Moflix uses a single recommendation response whose size is controlled by the source API. See [Genre Search](./genre-search) for those limits and additional Python filters.
 
-HentaiTV, AnimeIDHentai, and HentaiHaven have CLI and Python backends, but are not registered as Web UI search sites.
+HentaiTV and HentaiHaven support keyword search through `hentaitv` and `hentaihaven`, but are not in the genre registry. AnimeIDHentai is available through CLI/Python only. Unknown keyword-search site keys and caught upstream failures currently return an empty `results` list rather than a distinct error.
 
 ## Queue a download
 
@@ -61,7 +61,7 @@ curl -H "X-API-Key: YOUR_API_KEY" \
   http://localhost:8080/api/download
 ```
 
-The response contains `queue_id`; completion is asynchronous. An optional `custom_path_id` selects a configured download location. For MangaFire, use provider `MangaFire` and `mangafire_format` set to `jpg` or `cbz`.
+The response contains `queue_id`; completion is asynchronous. An optional `custom_path_id` selects a configured download location. For MangaFire, use provider `MangaFire` and `mangafire_format` set to `jpg` or `cbz`; to limit pages within a chapter, send an episode object such as `{"url":"CHAPTER_URL","selected_pages":[1,2]}` in the `episodes` list. HentaiTV and HentaiHaven use language `English Sub` and providers `HentaiTV` and `HentaiHaven`, respectively. Submission validates only part of the payload; acceptance does not establish that each URL, language, provider, or path will work.
 
 ## Read and filter the queue
 
@@ -71,7 +71,7 @@ Supplying any of the following parameters switches to a paginated response:
 
 | Parameter | Default | Meaning |
 | --- | --- | --- |
-| `limit` | `25` | Positive number of queue items per page |
+| `limit` | `25` | Positive number of queue items per page; rows are capped at 200 |
 | `offset` | `0` | Number of matching items to skip |
 | `status` | All | `queued`, `running`, `completed`, `failed`, `cancelled`, `active`, or `finished` |
 | `q` | Empty | Search queue titles |
@@ -95,12 +95,13 @@ All paths below start with `/api`.
 | `POST` | `/download` | Add a download to the queue |
 | `GET` | `/queue`, `/queue/counts` | Read queue state |
 | `POST` | `/queue/{id}/cancel` | Request cancellation |
-| `POST` | `/queue/{id}/force-cancel` | Force cancellation of active work |
+| `POST` | `/queue/{id}/force-cancel` | Request a force stop; supported download paths can interrupt FFmpeg |
 | `POST` | `/queue/{id}/retry` | Retry a failed or cancelled item |
 | `POST` | `/queue/{id}/move` | Reorder an item with a `direction` value |
 | `DELETE` | `/queue/{id}` | Remove an eligible queue item |
-| `DELETE` | `/queue/completed` | Clear completed queue entries |
-| `GET` | `/library/locations`, `/library/titles`, `/library/title` | Browse downloaded files |
+| `DELETE` | `/queue/completed` | Clear all finished entries: completed, failed, and cancelled |
+| `GET` | `/library/locations`, `/library/titles`, `/library/title` | Browse downloaded video folders |
+| `POST` | `/library/delete` | Delete a library title, season, or episode; full access required |
 | `GET`, `PUT` | `/settings` | Read or change settings; full access required |
 | `GET` | `/settings/env` | Export settings; full access required |
 | `GET` | `/autosync/status` | Read Auto-Sync state; full access required |
@@ -112,4 +113,6 @@ Use the in-app endpoint examples for required fields and additional routes. Libr
 
 Check the HTTP status before reading a success payload. Common responses are `400` for invalid inputs, `401` for invalid or expired keys, and `403` for insufficient permissions. Some operations return `409` when work is already running. Error responses commonly contain an `error` string.
 
-Polling the queue is appropriate for download progress. Avoid blindly retrying download submissions: a request can have queued work even if your client lost the response.
+Nonempty JSON mutation bodies sent with the wrong content type return `415`. Some malformed download requests are accepted and fail later in the queue; search can return an empty list on an upstream failure.
+
+Polling the queue is appropriate for download progress. A `completed` batch may still contain episode failures; inspect its errors. See [Web UI queue behavior](./web-ui#everyday-workflow) for cancellation and retry limits. Avoid blindly retrying download submissions: a request can have queued work even if your client lost the response.

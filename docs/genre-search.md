@@ -155,4 +155,4 @@ if genres:
         print(item["title"], item["url"])
 ```
 
-Moflix uses its public genre recommendation API. Keyword and genre queries are separate. `limit=None` keeps that API's default response size; it does not fetch the entire catalogue. The site currently caps genre recommendations at 12 titles, including when you request a larger limit.
+Moflix uses its public genre recommendation API. Keyword and genre queries are separate. `limit=None` keeps that API's default response size; it does not fetch the entire catalogue. The backend forwards an explicit limit to the API but does not enforce a fixed 12-title cap itself. The September 2026 sample returned 12 recommendations even for a larger requested limit; response sizes can change with the source.

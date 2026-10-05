@@ -49,5 +49,7 @@ features:
 | Fix a problem | [Troubleshooting](./troubleshooting) |
 
 ::: info A quick note
+These guides follow the application's `models` development branch. Features can differ from an older installed PyPI or standalone release; check `aniworld --version` and `aniworld --help` for your installation.
+
 Supported sites and stream hosters are third-party services. Their availability can change without an AniWorld Downloader update.
 :::

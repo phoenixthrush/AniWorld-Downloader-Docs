@@ -14,9 +14,9 @@ All registered source backends are listed below. Availability notes use sampled 
 | MangaFire | Manga | Working | JPG and CBZ downloads |
 | FilmPalast | Movies | Working | |
 | Hanime | Adult animation | Working | Disabled by default |
-| HentaiTV | Adult animation | Implemented; live availability unverified | CLI/Python only |
+| HentaiTV | Adult animation | Implemented; live availability unverified | Optional Web UI tab; disabled by default |
 | AnimeIDHentai | Adult animation | Implemented; live availability unverified | CLI/Python only |
-| HentaiHaven | Adult animation | Implemented; live availability unverified | CLI/Python only |
+| HentaiHaven | Adult animation | Implemented; live availability unverified | Optional Web UI tab; disabled by default |
 | Kinox | Movies and series | Unverified: manual captcha required | Disabled by default |
 | BurningSeries | Series | Broken: embed resolution failed | Disabled by default |
 
@@ -29,11 +29,11 @@ All four adult backends support extraction, keyword search, and downloads. Their
 | Site | Accepted URLs | Interfaces |
 | --- | --- | --- |
 | Hanime (`hanime.tv`) | Video URL | CLI, Python, and optional Web UI tab |
-| HentaiTV (`hentai.tv`) | Episode | CLI and Python |
+| HentaiTV (`hentai.tv`) | Episode | CLI, Python, and optional Web UI tab |
 | AnimeIDHentai (`animeidhentai.com`) | Episode, including legacy numeric-ID URLs | CLI and Python |
-| HentaiHaven (`hentaihaven.xxx`) | Title or episode | CLI and Python |
+| HentaiHaven (`hentaihaven.xxx`) | Title or episode | CLI, Python, and optional Web UI tab |
 
-Enable Hanime's Web UI tab with `ANIWORLD_ENABLE_HTV=1`; this setting refers to Hanime, not HentaiTV. The other three sites have no Web UI tabs or search integration yet. See [direct CLI examples](./usage#adult-site-backends) and [Python search](./python-api#adult-site-backends).
+Enable Hanime with `ANIWORLD_ENABLE_HTV=1`, HentaiTV with `ANIWORLD_ENABLE_HENTAITV=1`, and HentaiHaven with `ANIWORLD_ENABLE_HENTAIHAVEN=1`. All three tabs support keyword search and downloads. HentaiTV and HentaiHaven have no homepage browse rows or genre listing; their language and provider are fixed. AnimeIDHentai has no Web UI tab or HTTP search registration. See [direct CLI examples](./usage#adult-site-backends) and [Python search](./python-api#adult-site-backends).
 
 ## Stream Hosters
 
@@ -68,10 +68,12 @@ Site switches control the Web UI tabs and browse rows. Enable them through Setti
 | `ANIWORLD_ENABLE_FILMO` | `1` |
 | `ANIWORLD_ENABLE_MANGAFIRE` | `1` |
 | `ANIWORLD_ENABLE_HTV` | `0` |
+| `ANIWORLD_ENABLE_HENTAITV` | `0` |
+| `ANIWORLD_ENABLE_HENTAIHAVEN` | `0` |
 | `ANIWORLD_ENABLE_KINOX` | `0` |
 | `ANIWORLD_ENABLE_BURNINGSERIES` | `0` |
 
-Hanime contains adult content. Enabling a tab does not fix a source or hoster that is unavailable.
+Hanime, HentaiTV, HentaiHaven, and AnimeIDHentai contain adult content. Enabling a tab does not fix a source or hoster that is unavailable.
 
 ## Interface differences
 

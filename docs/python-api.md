@@ -1,6 +1,6 @@
 # Python API
 
-AniWorld Downloader can also be used as a Python package. The public model classes expose site metadata and the same download, watch, and Syncplay actions used by the command line.
+AniWorld Downloader can also be used as a Python package. The public model classes expose site metadata and supported actions. Video models offer download, watch, and Syncplay actions; manga models provide downloads, with attributes and method signatures that differ by backend.
 
 ```bash
 python -m pip install -U aniworld
@@ -107,7 +107,7 @@ series = HentaiHavenSeries("https://hentaihaven.xxx/watch/ane-wa-yanmama-junyuu-
 # series.download()
 ```
 
-These three searches default to `limit=30`. `limit=0` or an empty keyword returns no results without fetching. `limit=None` uses the backend's available search scope rather than promising a full catalogue. Their episode models default to `English Sub`; separate subtitle-file extraction is not implemented. See the [CLI examples](./usage#adult-site-backends) for direct downloads and the repository's examples for metadata attributes.
+These three searches default to `limit=30`. `limit=0` or an empty keyword returns no results without fetching. `limit=None` uses the backend's available search scope rather than promising a full catalogue. Their episode models default to `English Sub`. HentaiTV and AnimeIDHentai do not fetch separate subtitle files. HentaiHaven adds an English WebVTT track to newly downloaded MKV/MP4 files when its master playlist offers one; missing tracks and processing failures do not prevent the video download. Existing files are skipped. HentaiTV and HentaiHaven also have optional Web UI tabs; AnimeIDHentai remains CLI/Python only. See the [CLI examples](./usage#adult-site-backends) for direct downloads and the repository's examples for metadata attributes.
 
 ## More examples
 

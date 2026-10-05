@@ -14,7 +14,7 @@ aniworld --version
 Windows may use `py -m pip` instead. Some Linux systems use `python3 -m pip`.
 
 ::: tip First launch
-The first start may install the browser used for captcha handling. Let it finish once. Later starts reuse it.
+The first normal start may install the browser used for captcha handling, even before a download needs it. Reference commands such as `--help` and `--version` exit before that setup. Let it finish once. Later starts reuse it.
 :::
 
 ## Docker
@@ -60,9 +60,9 @@ Video downloads need FFmpeg. Watching needs the player selected by the action:
 | --- | --- |
 | Download | FFmpeg |
 | Watch | mpv or IINA |
-| Syncplay | Syncplay and mpv or IINA |
+| Syncplay | Syncplay and mpv |
 
-Portable dependencies can be installed automatically on Windows. On macOS and Linux, install missing tools with your normal package manager.
+The app offers to install missing portable tools on Windows or system packages on macOS/Linux. You can also install them yourself. Supply tools in advance for unattended use, or set `ANIWORLD_NO_AUTO_INSTALL=1` to decline automatic installation; browser handling may also need a virtual display on a headless Linux host.
 
 ## Optional integrations
 

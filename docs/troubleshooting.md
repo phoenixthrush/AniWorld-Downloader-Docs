@@ -65,7 +65,7 @@ Update the package and its certificate bundle:
 python -m pip install -U aniworld certifi
 ```
 
-On managed networks, a proxy may use a private certificate authority. Add that authority to the operating system or container trust store instead of disabling TLS verification.
+On managed networks, a proxy may use a private certificate authority. The app defaults to the certifi bundle, so adding a CA only to the OS/container store may not resolve this. Set `SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`, and `CURL_CA_BUNDLE` in the process environment before launching, pointing to a bundle containing both the normal trusted roots and your private CA. Setting only `SSL_CERT_FILE` can leave HTTP clients using the default Requests/cURL bundle. These defaults are established before the app loads its `.env`, so putting the CA variables only in that file will not override them. Browser and external-tool trust can differ; include which request/client failed when reporting a problem. Keep TLS verification enabled.
 
 ## Web UI is unreachable
 
@@ -108,6 +108,12 @@ Most settings changed in the Web UI apply only to the current process. Export th
 ## A theme hides the controls
 
 Open `http://localhost:8080/settings?nocss=1`, adjusting the address for your server. This disables custom CSS and the shader for that page so you can correct or clear them. See [theme recovery](./theming#recover-from-a-broken-theme).
+
+## SSO does not protect the Web UI
+
+Use both `--web-auth --web-sso`, or both `ANIWORLD_WEB_AUTH=1` and `ANIWORLD_WEB_SSO=1`. Enabling SSO alone does not install the authentication checks. `--web-force-sso` enables both, but requires working OIDC configuration and the SSO extra. See [Web authentication](./configuration#web-authentication).
+
+For reverse proxies, also check the [external URL and trusted proxy settings](./configuration#https-reverse-proxy).
 
 ## API requests return 401 or 403
 

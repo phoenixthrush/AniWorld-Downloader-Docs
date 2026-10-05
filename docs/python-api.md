@@ -107,7 +107,7 @@ series = HentaiHavenSeries("https://hentaihaven.xxx/watch/ane-wa-yanmama-junyuu-
 # series.download()
 ```
 
-These three searches default to `limit=30`. `limit=0` or an empty keyword returns no results without fetching. `limit=None` uses the backend's available search scope rather than promising a full catalogue. Their episode models default to `English Sub`. HentaiTV and AnimeIDHentai do not fetch separate subtitle files. HentaiHaven adds an English WebVTT track to newly downloaded MKV/MP4 files when its master playlist offers one; missing tracks and processing failures do not prevent the video download. Existing files are skipped. HentaiTV and HentaiHaven also have optional Web UI tabs; AnimeIDHentai remains CLI/Python only. See the [CLI examples](./usage#adult-site-backends) for direct downloads and the repository's examples for metadata attributes.
+These three searches default to `limit=30`. `limit=0` or an empty keyword returns no results without fetching. `limit=None` uses the backend's available search scope rather than promising a full catalogue. Their episode models default to `English Sub`. HentaiTV and AnimeIDHentai do not fetch separate subtitle files. HentaiHaven adds an English WebVTT track to MKV/MP4 files that lack an English subtitle track when its master playlist offers one; missing tracks and processing failures do not prevent the video download. Repeating the download retries missing subtitles without downloading the video again or duplicating an existing English track. HentaiTV and HentaiHaven also have optional Web UI tabs; AnimeIDHentai remains CLI/Python only. See the [CLI examples](./usage#adult-site-backends) for direct downloads and the repository's examples for metadata attributes.
 
 ## More examples
 

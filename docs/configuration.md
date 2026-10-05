@@ -29,6 +29,8 @@ ANIWORLD_DOWNLOAD_PATH=Downloads
 
 AniWorld settings use the `ANIWORLD_` prefix. The MangaFire format setting is `ANIWORLD_MANGAFIRE_FORMAT`; an older app `.env` is migrated automatically. OS and dependency variables such as `PATH`, `DISPLAY`, `XDG_CACHE_HOME`, `APPDATA`, `LOCALAPPDATA`, `PLAYWRIGHT_BROWSERS_PATH`, `PLAYWRIGHT_NODEJS_PATH`, `SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, and `WERKZEUG_RUN_MAIN` keep the names required by those systems. They are not AniWorld settings.
 
+Certificate bundle paths can be set in the process environment or the app `.env`. The process environment wins for the same variable, and the three CA variables survive `.env` template updates. At startup, the first nonempty value in `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, then `SSL_CERT_FILE` order supplies the shared HTTP session's bundle and defaults for unset CA variables; otherwise certifi supplies the bundle. Explicit values are preserved, so different paths can intentionally give clients different trust settings. Setting only `SSL_CERT_FILE` also supplies the Requests/cURL defaults. These settings do not configure Chromium's trust store or guarantee that external tools such as FFmpeg, mpv, or Syncplay use that bundle.
+
 Existing process environment variables override values loaded from `.env`. CLI options override the corresponding settings for that invocation. A relative `--output` path is resolved from the current working directory; a relative `ANIWORLD_DOWNLOAD_PATH` is normally resolved beneath your home directory. Restart after editing startup configuration.
 
 Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. Relative values are resolved against your home directory. On first relocation, the app can copy the old `.env`; it does not migrate the database or theme files. Move those separately with the app stopped if you want to retain them.
@@ -48,7 +50,7 @@ Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. R
 | `ANIWORLD_MOVIE_FOLDER` | `1` | Put each movie in its own folder |
 | `ANIWORLD_VIDEO_CODEC` | `copy` | Copy streams, or encode using a supported software/hardware codec |
 | `ANIWORLD_MANGAFIRE_FORMAT` | `jpg` | Chapter images (`jpg`) or comic archive (`cbz`) |
-| `ANIWORLD_NO_AUTO_INSTALL` | `0` | Disable the normal dependency-install prompts, browser installation, and package-manager installs |
+| `ANIWORLD_NO_AUTO_INSTALL` | `0` | Disable automatic dependency downloads and installs, including promptless helper downloads and browser installation |
 | `ANIWORLD_HLS_CONCURRENCY` | `8` | Parallel HLS segments, from `1` to `32` |
 | `ANIWORLD_DEBUG_MODE` | `0` | Enable detailed logging |
 | `ANIWORLD_NO_MENU` | `0` | Skip the CLI menu; supply URLs or an episode file |
@@ -56,7 +58,7 @@ Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. R
 
 Boolean values use `1` for on and `0` for off.
 
-`ANIWORLD_NO_AUTO_INSTALL=1` is not a network-offline mode: portable release lookup can still contact GitHub before the install decision, and internal binary fetches that bypass the prompt are not covered by that guard.
+`ANIWORLD_NO_AUTO_INSTALL=1` skips portable release lookup and automatic dependency downloads and installs. Existing tools on `PATH` or in the dependency folder remain usable. Cached archives with a known download URL can still be unpacked locally, but 7z archives require an already installed unpacker. This is not a network-offline mode: normal site and media requests still use the network.
 
 Language separation is applied through the Web UI queue path resolver, including Discord requests; direct CLI/Python downloads do not use that resolver. The English Sub restriction is not enforced by direct CLI/Python downloads, Discord requests, or Auto-Sync, and does not apply to the fixed-language HentaiTV/HentaiHaven backends.
 
@@ -68,11 +70,11 @@ The default naming template is:
 ANIWORLD_NAMING_TEMPLATE="{title} ({year}) [imdbid-{imdbid}]/Season {season}/{title} S{season}E{episode}.mkv"
 ```
 
-Available placeholders are `{title}`, `{year}`, `{imdbid}`, `{season}`, `{episode}`, `{resolution}`, and `{language}`. AniWorld, SerienStream, and Hanime can fill `{resolution}` from the finished file; it falls back to `unknown` when there is not exactly one video stream. Other formatters can leave it as `unknown`. Use brace placeholders throughout the template; legacy `%title%` placeholders are only translated by some filename formatters, not consistently in folder names. The file extension controls the output container. The Web UI's MKV/MP4 setting changes that extension in the running naming template; persist the template to keep it across restarts.
+Available placeholders are `{title}`, `{year}`, `{imdbid}`, `{season}`, `{episode}`, `{resolution}`, and `{language}`. AniWorld, SerienStream, Hanime, MegaKino, and Moflix can fill `{resolution}` from the finished file; it falls back to `unknown` when there is not exactly one video stream. Other formatters can leave it as `unknown`. Use brace placeholders throughout the template; legacy `%title%` placeholders are only translated by some filename formatters, not consistently in folder names. The file extension controls the output container. The Web UI's MKV/MP4 setting changes that extension in the running naming template; persist the template to keep it across restarts.
 
 `copy` avoids re-encoding. Software codec choices include `h264`, `h265`, and `av1`; hardware options include `h264_nvenc`, `hevc_nvenc`, `h264_amf`, `hevc_amf`, `av1_amf`, `h264_qsv`, `hevc_qsv`, and `av1_qsv`. These require a compatible FFmpeg build and, for hardware encoding, the corresponding device and drivers.
 
-Model-specific naming can differ, particularly for manga and movies. MegaKino and Moflix use their own folder/filename patterns and read the template extension rather than honoring every placeholder. Keep `SxxEyy` or `SxxEyyy` episode markers and matching title folders for Library and Auto-Sync recognition. Root-level movies saved with `ANIWORLD_MOVIE_FOLDER=0` are not listed by the current Library scanner. Use **Settings → path preview** or the Python model's path attributes to inspect the result before a large batch.
+Model-specific naming can differ, particularly for manga and movies. MegaKino and Moflix now format all template path components, including legacy percent placeholders, and sanitize metadata. New series paths use padded seasons and three-digit episode numbers; MegaKino treats its flat episode list as season 01. Neither model supplies an IMDb ID, so an empty default IMDb tag is omitted. Movies omit the default season folder and episode marker and respect `ANIWORLD_MOVIE_FOLDER`. If a file already exists at the old model-specific path with the requested extension, that path is reused; an existing file at the new template path takes priority. Old files are not renamed. Keep `SxxEyy` or `SxxEyyy` episode markers and matching title folders for Library and Auto-Sync recognition. Root-level movies saved with `ANIWORLD_MOVIE_FOLDER=0` are not listed by the current Library scanner. Use **Settings → path preview** or the Python model's path attributes to inspect the result before a large batch.
 
 ## Sources and playback
 

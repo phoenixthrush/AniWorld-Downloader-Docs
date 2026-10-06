@@ -27,7 +27,9 @@ Docker already includes the parts needed for downloads. Standalone builds still 
 
 ## Browser or captcha problems
 
-The first run may download Chromium. Keep the app open until it finishes and make sure the install directory is writable.
+Chromium setup runs when an operation needs a browser, such as a CAPTCHA fallback or the HentaiTV/AnimeIDHentai JavaScript player. The app does not install Chromium or start Xvfb during ordinary startup or HTTP-only requests. An existing browser installation is reused; when it is missing, the app may install it unless `ANIWORLD_NO_AUTO_INSTALL=1`. Keep the app open until installation finishes and make sure the browser cache directory is writable. Xvfb setup is limited to headed browser operations on Linux without a display; the supplied Docker image starts its virtual display when the container starts. The download folder does not control dependency setup.
+
+The app and Docker image install full Chromium with `--no-shell`, which skips the separate headless-shell download. HentaiTV and AnimeIDHentai run that full Chromium executable without a window (`headless=True`) to resolve the JavaScript player. CAPTCHA flows use headed Chromium, with Xvfb when needed on Linux.
 
 For repeated `403` or captcha failures:
 
@@ -42,7 +44,7 @@ CAPTCHA verification can still fail. During testing, a German VPN location repea
 
 ### Moflix browse or search returns 403
 
-Current Moflix requests use HTTP first, then the existing Chromium browser when the response identifies a Cloudflare challenge. This applies to browse, keyword search, and title metadata. The fallback loads the homepage before requesting the API, so it may take longer than an ordinary HTTP request. Chromium must be available even when you only want to browse titles.
+Current Moflix requests use HTTP first, then Chromium when the response identifies a Cloudflare challenge. Browser setup runs only for that fallback. This applies to browse, keyword search, and title metadata. The fallback loads the homepage before requesting the API, so it may take longer than an ordinary HTTP request. Browsing titles needs Chromium only when the HTTP requests hit that challenge.
 
 Update the package if your version lacks this fallback. If it still fails, follow the browser checks above and include the debug log in your report. Other HTTP errors still propagate; the fallback does not treat every `403` as a Cloudflare challenge.
 
@@ -65,7 +67,7 @@ Update the package and its certificate bundle:
 python -m pip install -U aniworld certifi
 ```
 
-On managed networks, a proxy may use a private certificate authority. The app defaults to the certifi bundle, so adding a CA only to the OS/container store may not resolve this. Set `SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`, and `CURL_CA_BUNDLE` in the process environment before launching, pointing to a bundle containing both the normal trusted roots and your private CA. Setting only `SSL_CERT_FILE` can leave HTTP clients using the default Requests/cURL bundle. These defaults are established before the app loads its `.env`, so putting the CA variables only in that file will not override them. Browser and external-tool trust can differ; include which request/client failed when reporting a problem. Keep TLS verification enabled.
+On managed networks, a proxy may use a private certificate authority. The app defaults to the certifi bundle, so adding a CA only to the OS/container store may not resolve this. Set `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, or `SSL_CERT_FILE` in the process environment or app `.env`, pointing to a bundle containing both the normal trusted roots and your private CA. The app loads `.env` before applying certificate defaults. It uses the first nonempty setting in that order for the shared HTTP session and fills unset CA variables with the same bundle, so setting only `SSL_CERT_FILE` also supplies the Requests/cURL defaults. Process environment values override `.env` values for the same variable; explicitly different CA paths are preserved. See [certificate configuration](./configuration). Browser and external-tool trust can differ; include which request/client failed when reporting a problem. Keep TLS verification enabled.
 
 ## Web UI is unreachable
 

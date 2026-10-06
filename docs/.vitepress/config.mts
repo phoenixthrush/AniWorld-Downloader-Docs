@@ -17,7 +17,8 @@ export default defineConfig({
       { text: 'Get Started', link: '/quick-start' },
       { text: 'Web UI', link: '/web-ui' },
       { text: 'CLI', link: '/usage' },
-      { text: 'GitHub', link: 'https://github.com/phoenixthrush/AniWorld-Downloader' }
+      { text: 'GitHub', link: 'https://github.com/phoenixthrush/AniWorld-Downloader' },
+      { text: '♥ Sponsor', link: 'https://github.com/sponsors/phoenixthrush' }
     ],
     sidebar: [
       {

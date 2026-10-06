@@ -1,5 +1,7 @@
 # AniWorld Downloader Docs
 
+[![GitHub Sponsors](https://img.shields.io/badge/♥%20Sponsor-Visit-red)](https://github.com/sponsors/phoenixthrush)
+
 The documentation site for [AniWorld Downloader](https://github.com/phoenixthrush/AniWorld-Downloader), built with VitePress.
 
 Install Node.js and pnpm first. Both must be available on your `PATH`; pnpm alone is not enough to run the build tools. CI uses Node.js 24.

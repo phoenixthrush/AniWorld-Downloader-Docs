@@ -45,7 +45,7 @@ Sites list the titles; stream hosters provide the video links. These results use
 | Filemoon | Samples passed | Not implemented |
 | Doodstream | Samples passed | Not implemented |
 | MegaKino | Sample passed | Not implemented |
-| Gupload | No current embed found in sampled titles | Not implemented |
+| Gupload | Hostname did not resolve during the check | Not implemented |
 | MoflixClick | Sample passed | Not implemented |
 | Vidara | Kinox CAPTCHA prevented resolving the sample embed | Not implemented |
 | Vidmoly | Samples failed: no embed HTML returned | Samples failed |
@@ -53,7 +53,7 @@ Sites list the titles; stream hosters provide the video links. These results use
 
 If a hoster fails, the downloader can try others in your configured fallback order, provided the title offers them in the selected language. It does not automatically switch languages. A failed or missing sample does not establish that a hoster has shut down.
 
-The checks discover current titles through browse/search, select an episode or chapter, and resolve its links through the backend. HentaiTV, AnimeIDHentai, and HentaiHaven used the search keyword `kanojo`; their poster checks verify URL extraction. The standalone hoster script uses saved embed URLs, refreshed for VOE, Doodstream, Filemoon, and MegaKino during this check. Kinox's CAPTCHA blocked access to Vidara, and none of the sampled titles offered a usable Gupload embed. Neither is counted as a passing stream check.
+The checks discover current titles through browse/search, select an episode or chapter, and resolve its links through the backend. HentaiTV, AnimeIDHentai, and HentaiHaven used the search keyword `kanojo`; their poster checks verify URL extraction. The standalone hoster script uses saved embed URLs, refreshed for VOE, Doodstream, Filemoon, and MegaKino during this check. Kinox's CAPTCHA blocked access to Vidara. Gupload's stream extractor is implemented, but `gupload.xyz` did not resolve on the tested connection, and no Gupload mirror appeared in 32 sampled Moflix titles during the follow-up check. Neither is counted as a passing stream check.
 
 
 ## Enable or hide sites

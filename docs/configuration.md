@@ -54,6 +54,7 @@ Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. R
 | `ANIWORLD_HLS_CONCURRENCY` | `8` | Parallel HLS segments, from `1` to `32` |
 | `ANIWORLD_DEBUG_MODE` | `0` | Enable detailed logging |
 | `ANIWORLD_NO_MENU` | `0` | Skip the CLI menu; supply URLs or an episode file |
+| `ANIWORLD_MENU_DOWNLOAD_ONLY` | `0`, Docker image uses `1` | Hide Watch and Syncplay in the terminal menu, independently of the download folder |
 | `ANIWORLD_ENABLE_LIBRARY` | `1` | Show the Web UI Library tab |
 
 Boolean values use `1` for on and `0` for off.

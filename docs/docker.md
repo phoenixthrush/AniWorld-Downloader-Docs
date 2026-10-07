@@ -2,6 +2,8 @@
 
 The image runs the Web UI with FFmpeg, Patchright Chromium, Xvfb for browser challenges, and the optional SSO and Discord dependencies already included.
 
+The terminal menu is also usable in the container. The image sets `ANIWORLD_MENU_DOWNLOAD_ONLY=1` to hide Watch and Syncplay there, regardless of the download folder. Save Location uses `ANIWORLD_DOWNLOAD_PATH`.
+
 ## Start with Compose
 
 Save [`docker-compose.yaml`](https://github.com/phoenixthrush/AniWorld-Downloader/blob/models/docker-compose.yaml) in a folder on your machine. Run these commands from that folder:

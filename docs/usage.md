@@ -30,6 +30,8 @@ aniworld --action Syncplay "URL"
 
 `Download` is the default. `Watch` opens the configured player. `Syncplay` starts a synchronized room.
 
+The terminal menu hides Watch and Syncplay when `ANIWORLD_MENU_DOWNLOAD_ONLY=1`, as set by the Docker image. Its Save Location starts from `ANIWORLD_DOWNLOAD_PATH`, with `~` expanded and relative paths based on your home directory. This menu setting does not restrict explicit CLI actions.
+
 ## Choose language and provider
 
 ```bash

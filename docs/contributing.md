@@ -31,16 +31,58 @@ These match the current CI checks. The automated suite uses temporary configurat
 
 ## Live provider checks
 
-Run these manually when investigating a source or hoster:
+Run these from the application repository with its Python environment activated. `PYTHONPATH=src` makes the checks use your current source checkout:
 
 ```bash
-python tests/test_providers_filmpalast.py
-python tests/test_providers_hosters.py vidmoly
+PYTHONPATH=src python tests/test_providers_aniworld.py
+PYTHONPATH=src python tests/test_providers_aniworld.py voe dood
+PYTHONPATH=src python tests/test_providers_hosters.py
+PYTHONPATH=src python tests/test_providers_hosters.py vidmoly
+PYTHONPATH=src python tests/test_providers_hentaitv.py kanojo
 ```
 
-The `tests/test_providers_*.py` scripts contact real sites and can launch captcha handling. They are not collected as pytest tests. Use a separate `ANIWORLD_INSTALL_FOLDER` if you want to isolate app configuration from your normal installation.
+The `tests/test_providers_*.py` scripts contact real sites and can launch CAPTCHA handling, but do not download complete media files. They are excluded from pytest collection. There is one script per source backend plus `test_providers_hosters.py` for standalone extractor samples:
 
-A stale test URL, regional block, captcha, or unavailable hoster can fail a sample without proving the entire backend is broken. Likewise, extracting a stream URL does not verify a complete download. Some extractor requests have no explicit timeout, so a stalled live check may need to be interrupted.
+| Source | Script suffix after `test_providers_` |
+| --- | --- |
+| AniWorld | `aniworld.py` |
+| SerienStream | `serienstream.py` |
+| MegaKino | `megakino.py` |
+| Filmo | `filmo.py` |
+| Moflix | `moflix.py` |
+| MangaFire | `mangafire.py` |
+| FilmPalast | `filmpalast.py` |
+| Hanime | `hanimetv.py` |
+| HentaiTV | `hentaitv.py` |
+| AnimeIDHentai | `animeidhentai.py` |
+| HentaiHaven | `hentaihaven.py` |
+| Kinox | `kinox.py` |
+| BurningSeries | `burningseries.py` |
+
+Most video-site scripts accept hoster-name filters such as `voe dood`; the HentaiTV, AnimeIDHentai, and HentaiHaven scripts accept a search keyword instead, defaulting to `kanojo`. Hanime uses its trending feed, and MangaFire uses its top-title feed. To run every script on macOS/Linux:
+
+```bash
+for check in tests/test_providers_*.py; do
+  PYTHONPATH=src python "$check"
+done
+```
+
+For Windows PowerShell, set `$env:PYTHONPATH = "src"` before running the individual `python tests/...` commands. To run all of them, use `Get-ChildItem tests/test_providers_*.py | ForEach-Object { python $_.FullName }`.
+
+Use a separate `ANIWORLD_INSTALL_FOLDER` to isolate configuration. For example, on macOS/Linux, prefix a command with `ANIWORLD_INSTALL_FOLDER=/tmp/aniworld-live-check`. Set `ANIWORLD_NO_AUTO_INSTALL=1` to prevent automatic dependency installation, and supply Chromium in advance when the site needs a browser. Set `ANIWORLD_CAPTCHA_TIMEOUT=30` to keep CAPTCHA attempts within the helper's 45-second per-operation wait.
+
+| Result | Meaning |
+| --- | --- |
+| `PASS` | A nonempty stream, poster, or page URL was extracted |
+| `FAIL` | The operation raised an error, timed out, or returned nothing |
+| `TODO` | The extractor is missing or raises `NotImplementedError` |
+| `SKIP` | No sample embed or matching extractor was available |
+
+The exit code counts failures. A zero exit code can still include `TODO` or `SKIP`; read the summary before treating a provider as verified. Preview failures can also produce a nonzero exit code when stream extraction passed.
+
+The BurningSeries check stops after a stream-mirror VPN warning or an embed timeout instead of repeating the same blocked operation for every hoster. Recognized VPN warning pages are not opened in Chromium. A working alternate stream mirror is still tried before reporting the warning.
+
+A stale test URL, VPN/IP block, CAPTCHA, or unavailable hoster can fail a sample without proving the entire backend is broken. If a standalone sample is deleted, replace its entry in `FALLBACK_EMBEDS` in `tests/provider_check.py` with a current embed URL from that hoster. Site scripts discover titles live rather than using those saved embeds. Repeat with another title or connection when needed, and record the date and scope of any status-table update. Extracting a URL does not verify complete playback or a finished download.
 
 ## Useful bug reports
 

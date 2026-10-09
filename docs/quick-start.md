@@ -64,16 +64,17 @@ Video downloads need FFmpeg. Watching needs the player selected by the action:
 
 The app offers to install missing portable tools on Windows or system packages on macOS/Linux. You can also install them yourself. Supply tools in advance for unattended use, or set `ANIWORLD_NO_AUTO_INSTALL=1` to decline automatic installation; browser handling may also need a virtual display on a headless Linux host.
 
-## Optional integrations
+## Optional features
 
-The normal installation includes the Web UI and terminal dependencies. Add OIDC SSO or the Discord request bot with:
+The normal installation includes the Web UI and terminal dependencies. Add EPUB output, OIDC SSO, or the Discord request bot with:
 
 ```bash
+python -m pip install "aniworld[epub]"
 python -m pip install "aniworld[sso]"
 python -m pip install "aniworld[discord]"
 ```
 
-Use `python -m pip install "aniworld[all]"` for both. The Docker image already includes these extras. See [Web UI authentication](./web-ui#local-accounts) and [Discord requests](./automation#discord-request-bot) for setup.
+Use `python -m pip install "aniworld[all]"` for all three extras. Docker includes them; standalone builds include EPUB support. See [Web UI authentication](./web-ui#local-accounts) and [Discord requests](./automation#discord-request-bot) for setup.
 
 ## Development version
 

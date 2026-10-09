@@ -49,7 +49,7 @@ Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. R
 | `ANIWORLD_SHOW_ALL_LANGUAGES` | `0` | Offer every preset for the site instead of restricting choices to the first-episode probe |
 | `ANIWORLD_MOVIE_FOLDER` | `1` | Put each movie in its own folder |
 | `ANIWORLD_VIDEO_CODEC` | `copy` | Copy streams, or encode using a supported software/hardware codec |
-| `ANIWORLD_MANGAFIRE_FORMAT` | `jpg` | Chapter images (`jpg`) or comic archive (`cbz`) |
+| `ANIWORLD_MANGAFIRE_FORMAT` | `jpg` | `jpg`, `cbz`, or `epub` (requires `aniworld[epub]`); see [manga usage](./usage#mangafire-downloads) |
 | `ANIWORLD_NO_AUTO_INSTALL` | `0` | Disable automatic dependency downloads and installs, including promptless helper downloads and browser installation |
 | `ANIWORLD_HLS_CONCURRENCY` | `8` | Parallel HLS segments, from `1` to `32` |
 | `ANIWORLD_DEBUG_MODE` | `0` | Enable detailed logging |

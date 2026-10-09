@@ -121,7 +121,13 @@ aniworld --no-menu --output "/path/to/downloads" "URL"
 
 Use the [naming template](./configuration#file-names) to control folders, filenames, and the MKV/MP4 extension. `ANIWORLD_VIDEO_CODEC=copy` preserves the original streams without re-encoding. Direct HTTP downloads, including HentaiTV and AnimeIDHentai, copy the source video regardless of the encoding preference. Multi-language muxing examples are available in the repository's [AniWorld examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples/aniworld_to) and [SerienStream examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples/s_to).
 
-For manga, set `ANIWORLD_MANGAFIRE_FORMAT=jpg` for individual images or `cbz` for an archive. Manga chapters are downloads, not video-player inputs.
+### MangaFire downloads
+
+Choose JPG, CBZ, or EPUB in the download dialog, or set `ANIWORLD_MANGAFIRE_FORMAT` (default `jpg`). EPUB requires the optional `aniworld[epub]` extra; JPG and CBZ need no extra.
+
+JPG saves chapter images. Title downloads create one CBZ or EPUB per available English volume, falling back to chapters when volume grouping is unavailable. Explicit chapter downloads remain chapter files. Changing format in the Web UI resets page selections.
+
+EPUB pages remain images; WebP is converted to PNG. Repeated archive downloads reuse valid pages and preserve previously saved unselected pages. Open saved manga in an external reader; the Web UI Library has no manga reader. See the [Python API](./python-api#mangafire-downloads) or [HTTP API](./http-api#queue-a-download) for page selection.
 
 ## Playback enhancements
 

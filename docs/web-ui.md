@@ -28,7 +28,9 @@ Queue items are processed one at a time. A batch is marked **completed** if at l
 
 Normal cancellation waits for the current episode. Force cancellation can interrupt the active FFmpeg process; direct HTTP, parallel HLS, and manga downloads may continue until their current operation finishes.
 
-The Library view scans title folders for video files and episode markers. Loose videos at the download root are not listed, and manga images/CBZ files do not have a reader or chapter listing. Naming patterns without recognized episode markers can make a series appear as a movie. Two-digit episode markers such as `S01E01` are recognized, but individual episode deletion currently expects three digits (`S01E001`).
+The Library view scans title folders for video files and episode markers. Loose videos at the download root are not listed, and manga images/CBZ/EPUB files do not have a reader or chapter listing. Naming patterns without recognized episode markers can make a series appear as a movie. Two-digit episode markers such as `S01E01` are recognized, but individual episode deletion currently expects three digits (`S01E001`).
+
+For manga output formats and page selection, see [manga usage](./usage#mangafire-downloads).
 
 ## Custom download paths
 

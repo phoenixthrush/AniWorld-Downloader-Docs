@@ -65,6 +65,17 @@ print(movie.title, movie.release_year)
 
 Use a current URL from the source site in real code. Domains and page formats can change independently of the package.
 
+## MangaFire downloads
+
+```python
+from aniworld import MangaFireToSeries
+
+series = MangaFireToSeries("https://mangafire.to/title/z9w-velvet-kisss")
+series.download(format="epub")  # Requires aniworld[epub]; also accepts jpg or cbz.
+```
+
+Archives prefer available English volumes, with chapter fallback. `series.volumes` lists source volumes; `series.download(chapters=series.preferred_chapters, format="cbz")` explicitly requests chapters. `MangaFireToChapter` accepts chapter or volume URLs, `format`, and optional 1-based `selected_pages`. An individual download returns its folder or archive path; a series download returns the title folder. See [manga usage](./usage#mangafire-downloads).
+
 ## Adult-site backends
 
 Hanime provides keyword search through `query_hanime`, which defaults to `limit=24`. Results contain `name`, `slug`, `cover_url`, `poster_url`, and `tags`; build a video URL from the slug. Use `HanimeTVEpisode` to download one video, or `HanimeTVSeries` to process its franchise.

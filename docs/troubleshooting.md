@@ -25,6 +25,10 @@ Video downloads require FFmpeg. Watching uses mpv or IINA on macOS; synchronized
 
 Docker already includes the parts needed for downloads. Standalone builds still depend on the tools required by the selected action being available or installed by the app.
 
+## EPUB output requires Pillow
+
+Install `aniworld[epub]` with the Python interpreter running the app, then restart the Web UI and retry. For an editable checkout, use `python -m pip install -e ".[epub]"`. JPG and CBZ work without Pillow.
+
 ## Browser or captcha problems
 
 Chromium setup runs when an operation needs a browser, such as a CAPTCHA fallback or the HentaiTV/AnimeIDHentai JavaScript player. The app does not install Chromium or start Xvfb during ordinary startup or HTTP-only requests. An existing browser installation is reused; when it is missing, the app may install it unless `ANIWORLD_NO_AUTO_INSTALL=1`. Keep the app open until installation finishes and make sure the browser cache directory is writable. Xvfb setup is limited to headed browser operations on Linux without a display; the supplied Docker image starts its virtual display when the container starts. The download folder does not control dependency setup.

@@ -136,7 +136,7 @@ Sorting requires a genre. The 09/2026 example lists `created_at_asc`, `released_
 from aniworld.search import fetch_mangafire_genres, query_mangafire
 
 genres = fetch_mangafire_genres()
-results = query_mangafire("dragon", genre="Fantasy", sort="score:desc", limit=10)
+results = query_mangafire("Velvet Kiss", genre="Romance", sort="score:desc", limit=10)
 for item in results:
     print(item["title"], item["url"])
 ```

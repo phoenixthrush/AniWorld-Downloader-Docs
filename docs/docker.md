@@ -1,6 +1,6 @@
 # Docker
 
-The image runs the Web UI with FFmpeg, Patchright Chromium, Xvfb for browser challenges, and the optional SSO and Discord dependencies already included.
+The image runs the Web UI with FFmpeg, Patchright Chromium, Xvfb for browser challenges, and the optional EPUB (Pillow), SSO, and Discord dependencies included through `aniworld[all]`.
 
 The terminal menu is also usable in the container. The image sets `ANIWORLD_MENU_DOWNLOAD_ONLY=1` to hide Watch and Syncplay there, regardless of the download folder. Save Location uses `ANIWORLD_DOWNLOAD_PATH`.
 

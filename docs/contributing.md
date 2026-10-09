@@ -17,7 +17,7 @@ python -m pip install -e ".[all,test]"
 python -m pip install ruff
 ```
 
-`all` includes SSO and Discord dependencies; `test` adds pytest. Python 3.11 or newer is required.
+`all` includes EPUB (Pillow), SSO, and Discord dependencies; `test` adds pytest. Python 3.11 or newer is required.
 
 ## Automated checks
 
@@ -59,7 +59,7 @@ The `tests/test_providers_*.py` scripts contact real sites and can launch CAPTCH
 | Kinox | `kinox.py` |
 | BurningSeries | `burningseries.py` |
 
-Most video-site scripts accept hoster-name filters such as `voe dood`; the HentaiTV, AnimeIDHentai, and HentaiHaven scripts accept a search keyword instead, defaulting to `kanojo`. Hanime uses its trending feed, and MangaFire uses its top-title feed. To run every script on macOS/Linux:
+Most video-site scripts accept hoster-name filters such as `voe dood`; the HentaiTV, AnimeIDHentai, and HentaiHaven scripts accept a search keyword instead, defaulting to `kanojo`. Hanime uses its trending feed; MangaFire checks Darling in the Franxx and Velvet Kiss. To run every script on macOS/Linux:
 
 ```bash
 for check in tests/test_providers_*.py; do

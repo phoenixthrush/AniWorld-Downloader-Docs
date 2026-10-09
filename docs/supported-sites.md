@@ -11,7 +11,7 @@ All registered source backends were checked live in **10/2026** using the manual
 | MegaKino | Movies and series | Stream URLs resolved | VOE and the MegaKino hoster passed |
 | Filmo | Movies | Stream URLs resolved | VOE samples passed |
 | Moflix | Movies and series | Stream URL resolved | MoflixClick sample passed |
-| MangaFire | Manga | Chapter/page URLs resolved | JPG and CBZ downloads supported |
+| MangaFire | Manga | Chapter/page URLs resolved | JPG and CBZ; EPUB with the `epub` extra |
 | FilmPalast | Movies | Stream URL resolved | VOE sample passed |
 | Hanime | Adult animation | Stream URL resolved | Disabled by default |
 | HentaiTV | Adult animation | Stream and poster URLs resolved | Optional Web UI tab; disabled by default |

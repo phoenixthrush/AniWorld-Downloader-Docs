@@ -61,7 +61,9 @@ curl -H "X-API-Key: YOUR_API_KEY" \
   http://localhost:8080/api/download
 ```
 
-The response contains `queue_id`; completion is asynchronous. An optional `custom_path_id` selects a configured download location. For MangaFire, use provider `MangaFire` and `mangafire_format` set to `jpg` or `cbz`; to limit pages within a chapter, send an episode object such as `{"url":"CHAPTER_URL","selected_pages":[1,2]}` in the `episodes` list. HentaiTV and HentaiHaven use language `English Sub` and providers `HentaiTV` and `HentaiHaven`, respectively. Submission validates only part of the payload; acceptance does not establish that each URL, language, provider, or path will work.
+The response contains `queue_id`; completion is asynchronous. An optional `custom_path_id` selects a configured download location. For MangaFire, use provider `MangaFire` and `mangafire_format` set to `jpg`, `cbz`, or `epub`; to limit pages within a chapter or volume, send an episode object such as `{"url":"CHAPTER_OR_VOLUME_URL","selected_pages":[1,2]}` in the `episodes` list. HentaiTV and HentaiHaven use language `English Sub` and providers `HentaiTV` and `HentaiHaven`, respectively. Submission validates only part of the payload; acceptance does not establish that each URL, language, provider, or path will work.
+
+For manga, `/api/seasons?url=TITLE_URL&mangafire_format=cbz` (or `epub`) lists available English volumes with chapter fallback; entries include `is_volume`. `/api/episodes?url=UNIT_URL&series_url=TITLE_URL` lists their pages. Queue the returned chapter or volume URL with optional 1-based `selected_pages`; explicit chapter URLs stay chapter downloads. EPUB requires the [optional extra](./quick-start#optional-features).
 
 ## Read and filter the queue
 

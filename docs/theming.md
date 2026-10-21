@@ -4,6 +4,10 @@ Use **Settings → Appearance** to change the Web UI with CSS and an optional GL
 
 ## Start with a theme
 
+For community themes and installation instructions, see [aniworld-themes](https://github.com/SiroxCW/aniworld-themes) by SiroxCW.
+
+To use the bundled light theme or build your own:
+
 1. Open the [light theme](https://github.com/phoenixthrush/AniWorld-Downloader/blob/models/themes/light.css) or the [documented template](https://github.com/phoenixthrush/AniWorld-Downloader/blob/models/themes/template.css).
 2. Copy the CSS into the stylesheet field in Appearance.
 3. Save and check the result.

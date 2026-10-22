@@ -7,7 +7,7 @@ AniWorld Downloader loads startup settings from `.env` and the process environme
 | Linux and macOS | `~/.aniworld/.env` |
 | Windows | `%USERPROFILE%\.aniworld\.env` |
 
-The file is created on first start. Use one `NAME=value` setting per line and restart the app after editing it.
+These are the default locations; `ANIWORLD_INSTALL_FOLDER` can select another app directory. The file is created on first start. Use one `NAME=value` setting per line and restart the app after editing it.
 
 ```dotenv
 ANIWORLD_LANGUAGE="German Dub"
@@ -28,6 +28,8 @@ ANIWORLD_DOWNLOAD_PATH=Downloads
 **Settings → Administration → Export settings** downloads the configurable Web UI settings as an `.env` file; it is not a complete export of every startup variable. Secrets such as the Discord token, OIDC secret, and administrator password are omitted; keep those values when merging the export into your existing configuration.
 
 AniWorld settings use the `ANIWORLD_` prefix. The MangaFire format setting is `ANIWORLD_MANGAFIRE_FORMAT`; an older app `.env` is migrated automatically. OS and dependency variables such as `PATH`, `DISPLAY`, `XDG_CACHE_HOME`, `APPDATA`, `LOCALAPPDATA`, `PLAYWRIGHT_BROWSERS_PATH`, `PLAYWRIGHT_NODEJS_PATH`, `SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, and `WERKZEUG_RUN_MAIN` keep the names required by those systems. They are not AniWorld settings.
+
+At startup the app rewrites `.env` from its bundled template, retaining existing values for template keys and the three CA variables. Other keys and custom comments are removed. Set dependency variables such as `PLAYWRIGHT_BROWSERS_PATH` in the process or container environment instead of relying on the app `.env` to retain them.
 
 Certificate bundle paths can be set in the process environment or the app `.env`. The process environment wins for the same variable, and the three CA variables survive `.env` template updates. At startup, the first nonempty value in `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, then `SSL_CERT_FILE` order supplies the shared HTTP session's bundle and defaults for unset CA variables; otherwise certifi supplies the bundle. Explicit values are preserved, so different paths can intentionally give clients different trust settings. Setting only `SSL_CERT_FILE` also supplies the Requests/cURL defaults. These settings do not configure Chromium's trust store or guarantee that external tools such as FFmpeg, mpv, or Syncplay use that bundle.
 
@@ -59,6 +61,8 @@ Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. R
 
 Boolean values use `1` for on and `0` for off.
 
+The fallback order is a preference list, not a host allowlist. Recognized providers omitted from it are appended automatically, and only providers available for the episode and selected language are tried.
+
 `ANIWORLD_NO_AUTO_INSTALL=1` skips portable release lookup and automatic dependency downloads and installs. Existing tools on `PATH` or in the dependency folder remain usable. Cached archives with a known download URL can still be unpacked locally, but 7z archives require an already installed unpacker. This is not a network-offline mode: normal site and media requests still use the network.
 
 Language separation is applied through the Web UI queue path resolver, including Discord requests; direct CLI/Python downloads do not use that resolver. The English Sub restriction is not enforced by direct CLI/Python downloads, Discord requests, or Auto-Sync, and does not apply to the fixed-language HentaiTV/HentaiHaven backends.
@@ -74,6 +78,8 @@ ANIWORLD_NAMING_TEMPLATE="{title} ({year}) [imdbid-{imdbid}]/Season {season}/{ti
 Available placeholders are `{title}`, `{year}`, `{imdbid}`, `{season}`, `{episode}`, `{resolution}`, and `{language}`. AniWorld, SerienStream, Hanime, MegaKino, Moflix, HentaiTV, AnimeIDHentai, and HentaiHaven can fill `{resolution}` from the finished file; it falls back to `unknown` when there is not exactly one video stream. Kinox, BurningSeries, FilmPalast, and Filmo use fixed filename patterns and do not apply the resolution placeholder. Use brace placeholders throughout the template; legacy `%title%` placeholders are only translated by some filename formatters, not consistently in folder names. The file extension controls the output container. The Web UI's MKV/MP4 setting changes that extension in the running naming template; persist the template to keep it across restarts.
 
 `copy` avoids re-encoding. Software codec choices include `h264`, `h265`, and `av1`; hardware options include `h264_nvenc`, `hevc_nvenc`, `h264_amf`, `hevc_amf`, `av1_amf`, `h264_qsv`, `hevc_qsv`, and `av1_qsv`. These require a compatible FFmpeg build and, for hardware encoding, the corresponding device and drivers.
+
+The codec setting applies to download paths that encode video through FFmpeg. Direct HTTP downloads copy the source media regardless of this preference. Remuxing into MP4 may fall back to H.264/AAC if stream copy fails because the source codecs are incompatible with that container.
 
 Model-specific naming can differ, particularly for manga and movies. MegaKino and Moflix now format all template path components, including legacy percent placeholders, and sanitize metadata. New series paths use padded seasons and three-digit episode numbers; MegaKino treats its flat episode list as season 01. Neither model supplies an IMDb ID, so an empty default IMDb tag is omitted. Movies omit the default season folder and episode marker and respect `ANIWORLD_MOVIE_FOLDER`. If a file already exists at the old model-specific path with the requested extension, that path is reused; an existing file at the new template path takes priority. Old files are not renamed. Keep `SxxEyy` or `SxxEyyy` episode markers and matching title folders for Library and Auto-Sync recognition. Root-level movies saved with `ANIWORLD_MOVIE_FOLDER=0` are not listed by the current Library scanner. Use **Settings → path preview** or the Python model's path attributes to inspect the result before a large batch.
 

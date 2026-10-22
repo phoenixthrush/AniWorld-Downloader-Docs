@@ -38,19 +38,21 @@ The app and Docker image install full Chromium with `--no-shell`, which skips th
 For repeated `403` or captcha failures:
 
 1. Open the source site in a normal browser and confirm it works on your connection.
-2. If the Chromium installation is missing, run `python -m patchright install chromium` with the same Python installation as the app.
+2. If the Chromium installation is missing, run `python -m patchright install chromium --no-shell` with the same Python installation and `PLAYWRIGHT_BROWSERS_PATH` as the app.
 3. Solve image challenges in the Chromium window when using the CLI, or open the CAPTCHA viewer from the running item on the Web UI queue page. Set `ANIWORLD_CAPTCHA_VISIBLE=1` to show a background window, and `ANIWORLD_CAPTCHA_MANUAL=1` to click widgets yourself.
 4. Set `ANIWORLD_CAPTCHA_DEBUG_LOG=1` to log browser errors and failed requests, then turn it off again after troubleshooting. If you need more time to solve a challenge, set `ANIWORLD_CAPTCHA_TIMEOUT` to a positive number of seconds.
 
 Some sites use regional blocks or change their protection without warning.
 
-CAPTCHA verification can still fail. During testing, a German VPN location repeatedly returned Turnstile error `600010` ("Verification failed"). Switching to an Austrian VPN location got past the blocked check and returned the player link for the same episode. If verification keeps failing, try another VPN location or network.
+CAPTCHA verification can still fail. An earlier **10/2026** check found that switching from a German VPN location to an Austrian one resolved Turnstile error `600010` ("Verification failed") for a sample episode. That is a historical observation for one connection and title, not a general fix. If verification keeps failing, try another VPN location or network.
 
-### Moflix browse or search returns 403
+### Moflix browse or search fails
 
 Current Moflix requests use HTTP first, then Chromium when the response identifies a Cloudflare challenge. Browser setup runs only for that fallback. This applies to browse, keyword search, and title metadata. The fallback loads the homepage before requesting the API, so it may take longer than an ordinary HTTP request. Browsing titles needs Chromium only when the HTTP requests hit that challenge.
 
 Update the package if your version lacks this fallback. If it still fails, follow the browser checks above and include the debug log in your report. Other HTTP errors still propagate; the fallback does not treat every `403` as a Cloudflare challenge.
+
+The app validates bootstrap data and API JSON before using them. A verification page or malformed response now produces an error message rather than an empty title list; HTTP search, browse, and genre endpoints return `502` for these Moflix errors. Failed requests are not cached, so a retry can recover. Genre browsing returns at most 12 recommendations because that endpoint has no pagination and rejects larger limits.
 
 ## A provider fails
 

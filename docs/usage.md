@@ -20,15 +20,17 @@ aniworld --episode-file episodes.txt --no-menu
 
 URLs may point to a supported series, season, episode, movie, or manga title. What is accepted depends on the site.
 
+Only AniWorld and SerienStream series URLs open the episode-selection menu. Season and episode URLs, and other sites, run the requested action directly. Use `--no-menu` for multiple positional URLs; without it, only the first is used unless `--episode-file` is supplied. Episode files append their nonblank lines to any positional URLs and process them directly.
+
 ## Choose the action
 
 ```bash
-aniworld --action Download "URL"
-aniworld --action Watch "URL"
-aniworld --action Syncplay "URL"
+aniworld --no-menu --action Download "URL"
+aniworld --no-menu --action Watch "URL"
+aniworld --no-menu --action Syncplay "URL"
 ```
 
-`Download` is the default. `Watch` opens the configured player. `Syncplay` starts a synchronized room.
+`Download` is the default. `Watch` opens the configured player and `Syncplay` starts a synchronized room. MangaFire provides downloads only.
 
 The terminal menu hides Watch and Syncplay when `ANIWORLD_MENU_DOWNLOAD_ONLY=1`, as set by the Docker image. Its Save Location starts from `ANIWORLD_DOWNLOAD_PATH`, with `~` expanded and relative paths based on your home directory. This menu setting does not restrict explicit CLI actions.
 
@@ -94,7 +96,7 @@ All four backends offer keyword search through the [Python API](./python-api#adu
 ## Syncplay options
 
 ```bash
-aniworld --action Syncplay \
+aniworld --no-menu --action Syncplay \
   --syncplay-host syncplay.pl:8998 \
   --syncplay-room "Movie Night" \
   --syncplay-username "Alex" \

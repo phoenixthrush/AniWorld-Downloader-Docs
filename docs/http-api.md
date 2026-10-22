@@ -46,9 +46,9 @@ curl -H "X-API-Key: YOUR_API_KEY" --get \
   http://localhost:8080/api/genre
 ```
 
-Use a slug returned by the genre list. Each page contains up to 30 results. AniWorld follows the site's pages; other backends are sliced into pages within their available listing scope. Moflix uses a single recommendation response whose size is controlled by the source API. See [Genre Search](./genre-search) for those limits and additional Python filters.
+Use a slug returned by the genre list. Each page contains up to 30 results. AniWorld follows the site's pages; other backends are sliced into pages within their available listing scope. Moflix requests at most 12 recommendations for a genre and does not paginate further. See [Genre Search](./genre-search) for those limits and additional Python filters.
 
-HentaiTV and HentaiHaven support keyword search through `hentaitv` and `hentaihaven`, but are not in the genre registry. AnimeIDHentai is available through CLI/Python only. Unknown keyword-search site keys and caught upstream failures currently return an empty `results` list rather than a distinct error.
+HentaiTV and HentaiHaven support keyword search through `hentaitv` and `hentaihaven`, but are not in the genre registry. AnimeIDHentai is available through CLI/Python only. Unknown keyword-search site keys return an empty `results` list. Exceptions propagated by a search backend return `502` with an `error` message; a backend that handles its own failure by returning no hits can still produce an empty success response.
 
 ## Queue a download
 
@@ -63,11 +63,13 @@ curl -H "X-API-Key: YOUR_API_KEY" \
 
 The response contains `queue_id`; completion is asynchronous. An optional `custom_path_id` selects a configured download location. For MangaFire, use provider `MangaFire` and `mangafire_format` set to `jpg`, `cbz`, or `epub`; to limit pages within a chapter or volume, send an episode object such as `{"url":"CHAPTER_OR_VOLUME_URL","selected_pages":[1,2]}` in the `episodes` list. HentaiTV and HentaiHaven use language `English Sub` and providers `HentaiTV` and `HentaiHaven`, respectively. Submission validates only part of the payload; acceptance does not establish that each URL, language, provider, or path will work.
 
+For Hanime, use language `Japanese` and provider `HanimeTV`; the global download defaults do not select these automatically.
+
 For manga, `/api/seasons?url=TITLE_URL&mangafire_format=cbz` (or `epub`) lists available English volumes with chapter fallback; entries include `is_volume`. `/api/episodes?url=UNIT_URL&series_url=TITLE_URL` lists their pages. Queue the returned chapter or volume URL with optional 1-based `selected_pages`; explicit chapter URLs stay chapter downloads. EPUB requires the [optional extra](./quick-start#optional-features).
 
 ## Read and filter the queue
 
-Without parameters, `GET /api/queue` returns the full `items` list, including episode lists, plus `ffmpeg_progress`.
+Without parameters, `GET /api/queue` returns the full `items` list, including episode lists, plus `ffmpeg_progress`. Each item's `episodes` field is a JSON-encoded string. The `errors` field is also JSON-encoded when errors are present; decode these fields before inspecting their entries.
 
 Supplying any of the following parameters switches to a paginated response:
 
@@ -116,5 +118,7 @@ Use the in-app endpoint examples for required fields and additional routes. Libr
 Check the HTTP status before reading a success payload. Common responses are `400` for invalid inputs, `401` for invalid or expired keys, and `403` for insufficient permissions. Some operations return `409` when work is already running. Error responses commonly contain an `error` string.
 
 Nonempty JSON mutation bodies sent with the wrong content type return `415`. Some malformed download requests are accepted and fail later in the queue; search can return an empty list on an upstream failure.
+
+Genre requests return `404` for unavailable genres, `502` for upstream HTTP/request failures or Moflix verification/JSON errors, and `400` for invalid site, slug, or nonnumeric page input. Pages below 1 are treated as page 1. Other uncaught failures can still return `500`. Search results are not cached. Browse/genre fetches that raise or return `None` are not cached; successful results, including empty lists, are cached for an hour.
 
 Polling the queue is appropriate for download progress. A `completed` batch may still contain episode failures; inspect its errors. See [Web UI queue behavior](./web-ui#everyday-workflow) for cancellation and retry limits. Avoid blindly retrying download submissions: a request can have queued work even if your client lost the response.

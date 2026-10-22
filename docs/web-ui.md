@@ -21,14 +21,16 @@ The remaining pages are intentionally simple:
 | Page | What it does |
 | --- | --- |
 | Library | Shows downloaded folders and lets admins remove files |
-| Auto-Sync | Checks AniWorld’s new-episode feed for titles already in your library |
-| Settings | Controls paths, defaults, users, interface options, and the Discord bot |
+| Auto-Sync | Admin page that checks AniWorld’s new-episode feed for titles already in your library; disabled by default |
+| Settings | Admin page for paths, defaults, users, interface options, and the Discord bot |
 
 Queue items are processed one at a time. A batch is marked **completed** if at least one episode succeeds, even when others fail; inspect its errors before treating it as fully downloaded. Retry is available for failed/cancelled batches, so failed episodes inside a completed batch must be submitted again. Clearing finished entries also removes failed and cancelled records.
 
 Normal cancellation waits for the current episode. Force cancellation can interrupt the active FFmpeg process; direct HTTP, parallel HLS, and manga downloads may continue until their current operation finishes.
 
 The Library view scans title folders for video files and episode markers. Loose videos at the download root are not listed, and manga images/CBZ/EPUB files do not have a reader or chapter listing. Naming patterns without recognized episode markers can make a series appear as a movie. Two-digit episode markers such as `S01E01` are recognized, but individual episode deletion currently expects three digits (`S01E001`).
+
+With language separation enabled, Library locations include only the four German/English dub/sub folders. Hanime downloads use a `japanese` folder, which is currently omitted from that view.
 
 For manga output formats and page selection, see [manga usage](./usage#mangafire-downloads).
 
@@ -84,7 +86,7 @@ Kinox may require opening the title page and solving its challenge manually befo
 
 ## Settings and persistence
 
-Most general settings changed in the Web UI last until the process restarts. Put values in `~/.aniworld/.env` when they must survive restarts. Custom paths, users, API keys, queue data, and Auto-Sync exclusions are stored in the Web UI database. Themes and Discord bot settings also persist. See [Configuration](./configuration#what-survives-a-restart) for the distinction and the settings export option.
+Most general settings changed in the Web UI last until the process restarts. Put values in the app directory's `.env` (`~/.aniworld/.env` by default) when they must survive restarts. Custom paths, users, API keys, queue data, and Auto-Sync exclusions are stored in the Web UI database. Themes and Discord bot settings also persist. See [Configuration](./configuration#what-survives-a-restart) for the distinction and the settings export option.
 
 ## Automation and integrations
 

@@ -34,7 +34,7 @@ An unavailable genre may raise an HTTP error or `ValueError`, depending on the b
 | Filmo | `query_filmo` | `genre`, `year`, `runtime_min`, `runtime_max`, `country`, `sort` | Follows browse result pages |
 | Hanime | `query_hanime` | `genre`, `sort`, optional keyword | First genre page |
 | MangaFire | `query_mangafire` | `genre`, `sort`, optional keyword | Follows result pages |
-| Moflix | `query_moflix` | `genre` | One recommendation response |
+| Moflix | `query_moflix` | `genre` | One recommendation response, at most 12 titles |
 
 All functions in this table are available from `aniworld.search`. The older backend-specific Hanime and MangaFire functions remain available for existing integrations. Genre discovery returns `name` and `slug` entries for every site. MangaFire also retains the numeric `id`.
 
@@ -155,4 +155,4 @@ if genres:
         print(item["title"], item["url"])
 ```
 
-Moflix uses its public genre recommendation API. Keyword and genre queries are separate. `limit=None` keeps that API's default response size; it does not fetch the entire catalogue. The backend forwards an explicit limit to the API but does not enforce a fixed 12-title cap itself. The September 2026 sample returned 12 recommendations even for a larger requested limit; response sizes can change with the source.
+Moflix uses its public genre recommendation API. Keyword and genre queries are separate. The backend requests 12 recommendations for `limit=None` and clamps larger limits to 12 because the endpoint rejects larger requests. A smaller positive limit is forwarded and caps the returned list. The endpoint has no pagination, so `limit=None` does not fetch the entire catalogue. Verification pages, invalid JSON, and malformed API payloads raise errors rather than being treated as empty results.

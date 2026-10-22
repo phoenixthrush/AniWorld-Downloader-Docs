@@ -14,7 +14,7 @@ aniworld --version
 Windows may use `py -m pip` instead. Some Linux systems use `python3 -m pip`.
 
 ::: tip First launch
-The first normal start may install the browser used for captcha handling, even before a download needs it. Reference commands such as `--help` and `--version` exit before that setup. Let it finish once. Later starts reuse it.
+Chromium setup is deferred until a browser-backed feature needs it, such as captcha handling or JavaScript player resolution. Starting the CLI or Web UI alone does not install it. The first browser-backed request may take longer while Chromium is installed; later requests reuse it.
 :::
 
 ## Docker
@@ -41,7 +41,7 @@ Open `http://localhost:8080` if the browser does not open automatically.
 aniworld
 ```
 
-Search for a title or paste a supported URL, choose the episodes, then choose Download, Watch, or Syncplay.
+Search for an AniWorld title or paste an AniWorld or SerienStream series URL, choose the episodes, then choose Download, Watch, or Syncplay. Episode and season URLs, and URLs from other supported sites, run directly without the episode menu.
 
 ### Direct command
 
@@ -62,7 +62,7 @@ Video downloads need FFmpeg. Watching needs the player selected by the action:
 | Watch | mpv or IINA |
 | Syncplay | Syncplay and mpv |
 
-The app offers to install missing portable tools on Windows or system packages on macOS/Linux. You can also install them yourself. Supply tools in advance for unattended use, or set `ANIWORLD_NO_AUTO_INSTALL=1` to decline automatic installation; browser handling may also need a virtual display on a headless Linux host.
+The app can offer portable FFmpeg, mpv, and Syncplay installation on Windows, and player installation through supported package managers on macOS/Linux. Install FFmpeg yourself on macOS/Linux. Supply tools in advance for unattended use, or set `ANIWORLD_NO_AUTO_INSTALL=1` to decline automatic installation; browser handling may also need a virtual display on a headless Linux host.
 
 ## Optional features
 
@@ -96,4 +96,4 @@ python -m pip install -U aniworld
 python -m pip uninstall aniworld
 ```
 
-Your settings and Web UI database live in `~/.aniworld` and are not removed with the Python package.
+Your settings and Web UI database live in `~/.aniworld` by default, or the folder selected with `ANIWORLD_INSTALL_FOLDER`. Uninstalling the Python package does not remove them.

@@ -13,9 +13,11 @@ Auto-Sync checks **AniWorld's new-episode feed** for titles already present in y
 
 The library acts as the list of followed titles. When a feed entry matches a title on disk, the default behavior queues its missing episodes. Enable **only new episodes** if you want to keep deliberate gaps: that mode limits the work to episodes announced in the feed.
 
-Exclude a series when you want to keep it in your library without having Auto-Sync update it. Exclusions are saved in the database and apply to the series URL across library locations. Matching relies on title folder names and `SxxEyy`/`SxxEyyy` episode markers. Custom naming without those markers can cause episodes already on disk to be queued again. Language detection samples an existing video file in each title/language folder.
+Exclude a series when you want to keep it in your library without having Auto-Sync update it. Exclusions are saved in the database and apply to the series URL across library locations. Matching relies on title folder names and `SxxEyy`/`SxxEyyy` episode markers. Custom naming without those markers can cause episodes already on disk to be queued again. With language separation enabled, the language folder determines the preset; otherwise detection probes one existing video file per title folder.
 
 Auto-Sync detects the languages of your existing files and checks availability for incoming episodes. If it cannot detect a language, or the new episodes are only available in another language, it skips the title instead of switching languages automatically.
+
+Each matching library copy is handled separately. If an unseparated copy contains several presets, one is selected per run in this order: German Dub, German Sub, English Dub, English Sub. Feed language flags filter announced episodes; older gaps are queued without checking every episode's available streams first and can still fail during download.
 
 ### Interval schedule
 
@@ -36,7 +38,7 @@ ANIWORLD_AUTOSYNC_MODE=cron
 ANIWORLD_AUTOSYNC_CRON="0 3 * * *"
 ```
 
-This example runs at 03:00 in the server's local timezone. Separate multiple cron expressions with semicolons, for example `0 3 * * *; 0 15 * * *`. A new fixed schedule waits for its next scheduled time. The settings editor also accepts supported phrases such as `every monday, friday at 10pm` and previews the resulting schedule. For Docker, check the container's timezone rather than assuming it matches the host.
+This example runs at 03:00 in the server's local timezone. Separate multiple cron expressions with semicolons, for example `0 3 * * *; 0 15 * * *`. Without a previous run, a fixed schedule waits for its next scheduled time. If a stored previous run makes the schedule overdue, it can run immediately. The settings editor also accepts supported phrases such as `every monday, friday at 10pm` and previews the resulting schedule. For Docker, check the container's timezone rather than assuming it matches the host.
 
 Settings changed in the browser apply to the running process. Save the environment values to keep the feature and its schedule enabled after a restart. The scheduler may take up to five minutes to notice a changed setting.
 

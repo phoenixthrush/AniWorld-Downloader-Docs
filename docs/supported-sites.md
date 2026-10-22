@@ -2,23 +2,33 @@
 
 AniWorld and SerienStream are the main focus of the project.
 
-All registered source backends were checked live in **10/2026** using the manual provider scripts. The tables show the best observed results. Successful checks resolved sample stream or chapter/page URLs; no complete media files were downloaded. Results can vary by title, connection, and stream hoster.
+## Current backend coverage
+
+The `models` branch registers all 13 sources listed below. AniWorld, SerienStream, and BurningSeries accept series, season, and episode URLs. MegaKino, FilmPalast, and Filmo use title pages; Kinox also carries episode selection in URL query parameters. Moflix accepts title URLs with optional slugs, `/season/N` or `/season/N/episodes/N` suffixes, and `?season=N&episode=N` selectors. Its model normalizes accepted links to `https://moflix-stream.xyz/titles/ID` plus the episode selector.
+
+MangaFire accepts `/title/ID-slug`, chapter URLs, and `/volume/ID` URLs. It downloads chapter images or CBZ/EPUB archives; title archive downloads prefer available English volumes. EPUB needs the optional `epub` extra. Adult-site URL support is listed [below](#adult-site-backends).
+
+Backend registration means the code supports those inputs; it does not establish that a third-party source is reachable or that its streams currently work.
+
+## Live checks
+
+The tables summarize observed results from manual provider checks. Successful checks resolved stream, poster, or chapter/page URLs; no complete media files were downloaded. Results can vary by title, stream hoster, and IP address, including VPN locations such as Austria and Germany.
 
 | Site | Content | Status | Notes |
 | --- | --- | --- | --- |
 | AniWorld | Anime and anime movies | Stream URLs resolved | VOE, Doodstream, and Filemoon samples passed; Vidmoly failed |
-| SerienStream | Series | Stream URLs resolved | VOE and Doodstream samples passed |
-| MegaKino | Movies and series | Stream URLs resolved | VOE and the MegaKino hoster passed |
+| SerienStream | Series | Stream URLs resolved | Both dub presets resolved VOE; CAPTCHA handling can block access |
+| MegaKino | Movies and series | Stream URLs resolved | Sampled title's VOE link passed; a separate MegaKino hoster sample also passed |
 | Filmo | Movies | Stream URLs resolved | VOE samples passed |
-| Moflix | Movies and series | Stream URL resolved | MoflixClick sample passed |
-| MangaFire | Manga | Chapter/page URLs resolved | JPG and CBZ; EPUB with the `epub` extra |
-| FilmPalast | Movies | Stream URL resolved | VOE sample passed |
-| Hanime | Adult animation | Stream URL resolved | Disabled by default |
+| Moflix | Movies and series | Stream URLs resolved | MoflixClick and Vidara samples passed; verification can block title discovery |
+| MangaFire | Manga | Chapter/page URLs resolved | Two sample titles; archive creation and image downloads were not tested |
+| FilmPalast | Movies | Stream URL resolved | VOE sample passed; some requests returned no extractable source |
+| Hanime | Adult animation | Stream URL resolved | Trending feed can return HTTP 403 or require a CAPTCHA |
 | HentaiTV | Adult animation | Stream and poster URLs resolved | Optional Web UI tab; disabled by default |
-| AnimeIDHentai | Adult animation | Stream and poster URLs resolved | CLI/Python only |
+| AnimeIDHentai | Adult animation | Stream and poster URLs resolved; content unverified | Returned stream filename differed from the selected title; CLI/Python only |
 | HentaiHaven | Adult animation | Stream and poster URLs resolved | Optional Web UI tab; disabled by default |
 | Kinox | Movies and series | Blocked by verification CAPTCHA | Disabled by default |
-| BurningSeries | Series | Stream mirrors returned VPN warning pages | Disabled by default |
+| BurningSeries | Series | Stream mirrors returned VPN warning pages | No usable mirror for the sample; stopped at the first blocked hoster |
 
 "Disabled by default" refers to Web UI visibility; direct CLI URLs remain accepted.
 
@@ -37,23 +47,25 @@ Enable Hanime with `ANIWORLD_ENABLE_HTV=1`, HentaiTV with `ANIWORLD_ENABLE_HENTA
 
 ## Stream Hosters
 
-Sites list the titles; stream hosters provide the video links. These results use the same **10/2026** checks, including fresh embed URLs discovered from current titles.
+Sites list the titles; stream hosters provide the video links. The current code registers stream extractors for all nine hosters below; preview extractors are implemented for VOE, Vidmoly, and Vidoza.
 
 | Hoster | Stream extraction | Preview extraction |
 | --- | --- | --- |
-| VOE | Samples passed | Samples failed |
-| Filemoon | Samples passed | Not implemented |
+| VOE | Fresh source-site samples passed; saved standalone sample returned HTTP 404 | All tested previews failed |
+| Filemoon | Fresh AniWorld samples passed; saved standalone sample was inconsistent | Not implemented |
 | Doodstream | Samples passed | Not implemented |
 | MegaKino | Sample passed | Not implemented |
-| Gupload | Hostname did not resolve during the check | Not implemented |
-| MoflixClick | Sample passed | Not implemented |
-| Vidara | Kinox CAPTCHA prevented resolving the sample embed | Not implemented |
-| Vidmoly | Samples failed: no embed HTML returned | Samples failed |
+| Gupload | Not checked: no saved embed or discovered sample | Not implemented |
+| MoflixClick | Moflix sample passed; no saved standalone embed | Not implemented |
+| Vidara | Moflix sample passed; Kinox remained CAPTCHA-blocked | Not implemented |
+| Vidmoly | Samples failed: no extractable script content | Samples failed |
 | Vidoza | Sample URL returned HTTP 404 | Sample URL returned HTTP 404 |
 
 If a hoster fails, the downloader can try others in your configured fallback order, provided the title offers them in the selected language. It does not automatically switch languages. A failed or missing sample does not establish that a hoster has shut down.
 
-The checks discover current titles through browse/search, select an episode or chapter, and resolve its links through the backend. HentaiTV, AnimeIDHentai, and HentaiHaven used the search keyword `kanojo`; their poster checks verify URL extraction. The standalone hoster script uses saved embed URLs, refreshed for VOE, Doodstream, Filemoon, and MegaKino during this check. Kinox's CAPTCHA blocked access to Vidara. Gupload's stream extractor is implemented, but `gupload.xyz` did not resolve on the tested connection, and no Gupload mirror appeared in 32 sampled Moflix titles during the follow-up check. Neither is counted as a passing stream check.
+The checks discover current titles through browse/search, select an episode or chapter, and resolve its links through the backend. HentaiTV, AnimeIDHentai, and HentaiHaven used the search keyword `kanojo`; their poster checks verify URL extraction. MangaFire checked Darling in the Franxx and Velvet Kiss. The standalone hoster script used its existing saved embed URLs without replacing them. A deleted or changed saved sample can fail while fresh source-site samples pass, as observed for VOE and Filemoon. MoflixClick and Vidara were reached through Moflix; Gupload still had no saved or discovered sample.
+
+VOE preview errors included quoted URLs being used as request URLs. A follow-up metadata check found that the selected AnimeIDHentai title's linked player page supplied the input with the mismatched basename; no video was downloaded to establish its content.
 
 
 ## Enable or hide sites
@@ -81,4 +93,4 @@ Hanime, HentaiTV, HentaiHaven, and AnimeIDHentai contain adult content. Enabling
 
 The interactive terminal menu is primarily for AniWorld and SerienStream. Other registered site URLs can be processed directly. Python models expose site-specific metadata and actions; not every backend capability has a corresponding Web UI control.
 
-See [Genre Search](./genre-search) for backend filters and [Contributing](./contributing#live-provider-checks) for live-check scripts. Status tables are dated snapshots and should be updated with the scope of each check, not inferred from offline tests.
+See [Genre Search](./genre-search) for backend filters and [Contributing](./contributing#live-provider-checks) for live-check scripts. Status tables are snapshots and should be updated with the scope of each check, not inferred from offline tests.

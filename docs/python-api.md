@@ -41,6 +41,8 @@ episode.download()
 
 An episode also exposes `provider_data`, `stream_url`, `is_downloaded`, and its related `series` and `season` objects. Network-backed properties can raise an exception when a source or host is unavailable, so handle failures in long-running integrations.
 
+For AniWorld episodes, `is_downloaded` is a probe-result dictionary with fields such as `exists`, `audio_langs`, and `video_langs`, rather than a boolean. Use the fields relevant to your integration. Series/season batch methods can log individual episode failures and continue without raising or returning an aggregate result. When you need reliable per-episode outcomes, iterate the episodes and handle each action's exception yourself.
+
 ## Other sources
 
 All public site model classes are available from either `aniworld` or `aniworld.models`:
@@ -75,6 +77,21 @@ series.download(format="epub")  # Requires aniworld[epub]; also accepts jpg or c
 ```
 
 Archives prefer available English volumes, with chapter fallback. `series.volumes` lists source volumes; `series.download(chapters=series.preferred_chapters, format="cbz")` explicitly requests chapters. `MangaFireToChapter` accepts chapter or volume URLs, `format`, and optional 1-based `selected_pages`. An individual download returns its folder or archive path; a series download returns the title folder. See [manga usage](./usage#mangafire-downloads).
+
+For example, download selected pages from an actual chapter or volume URL:
+
+```python
+from aniworld import MangaFireToChapter
+
+chapter = MangaFireToChapter(
+    "CHAPTER_OR_VOLUME_URL",
+    selected_pages=[1, 2],
+    format="cbz",
+)
+# chapter.download()
+```
+
+Replace the URL placeholder before running. Use `selected_path` on a chapter or `download(folder=...)` to choose a destination; `MangaFireToSeries` itself does not accept `selected_path`.
 
 ## Adult-site backends
 

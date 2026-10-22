@@ -22,12 +22,12 @@ python -m pip install ruff
 ## Automated checks
 
 ```bash
-pytest
+ruff format .
 ruff check .
-ruff format --check .
+pytest
 ```
 
-These match the current CI checks. The automated suite uses temporary configuration, database, and download locations and blocks network connections, including DNS lookups, native curl requests, and browser launches, during collection and test execution. CI installs dependencies from package registries, but the tests must not fetch source sites or stream hosters. They test behavior with fixtures and mocked services; passing them does not confirm that third-party sites currently work.
+Review formatting changes before finishing. CI runs pytest, lint checks, and `ruff format --check` to verify formatting without rewriting files. The automated suite uses temporary configuration, database, and download locations and blocks network connections, including DNS lookups, native curl requests, and browser launches, during collection and test execution. CI installs dependencies from package registries, but the tests must not fetch source sites or stream hosters. They test behavior with fixtures and mocked services; passing them does not confirm that third-party sites currently work.
 
 ## Live provider checks
 
@@ -69,7 +69,7 @@ done
 
 For Windows PowerShell, set `$env:PYTHONPATH = "src"` before running the individual `python tests/...` commands. To run all of them, use `Get-ChildItem tests/test_providers_*.py | ForEach-Object { python $_.FullName }`.
 
-Use a separate `ANIWORLD_INSTALL_FOLDER` to isolate configuration. For example, on macOS/Linux, prefix a command with `ANIWORLD_INSTALL_FOLDER=/tmp/aniworld-live-check`. Set `ANIWORLD_NO_AUTO_INSTALL=1` to prevent automatic dependency installation, and supply Chromium in advance when the site needs a browser. Set `ANIWORLD_CAPTCHA_TIMEOUT=30` to keep CAPTCHA attempts within the helper's 45-second per-operation wait.
+Use a separate `ANIWORLD_INSTALL_FOLDER` to isolate configuration. For example, on macOS/Linux, prefix a command with `ANIWORLD_INSTALL_FOLDER=/tmp/aniworld-live-check`. Set `ANIWORLD_NO_AUTO_INSTALL=1` to prevent automatic dependency installation, and supply Chromium in advance when the site needs a browser. `ANIWORLD_CAPTCHA_TIMEOUT=30` shortens supported challenge-solving loops, but browser startup, navigation, and HTTP requests can add time. The helper waits 45 seconds per guarded operation; a timeout does not cancel its background thread or any browser it already opened.
 
 | Result | Meaning |
 | --- | --- |

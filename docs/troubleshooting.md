@@ -31,9 +31,11 @@ Install `aniworld[epub]` with the Python interpreter running the app, then resta
 
 ## Browser or captcha problems
 
-Chromium setup runs when an operation needs a browser, such as a CAPTCHA fallback or the HentaiTV/AnimeIDHentai JavaScript player. The app does not install Chromium or start Xvfb during ordinary startup or HTTP-only requests. An existing browser installation is reused; when it is missing, the app may install it unless `ANIWORLD_NO_AUTO_INSTALL=1`. Keep the app open until installation finishes and make sure the browser cache directory is writable. Xvfb setup is limited to headed browser operations on Linux without a display; the supplied Docker image starts its virtual display when the container starts. The download folder does not control dependency setup.
+Hanime, HentaiTV, and AnimeIDHentai resolve their player handshakes through HTTP. If that fails, they fall back to Chromium. Other sites may still need a browser for CAPTCHA verification.
 
-The app and Docker image install full Chromium with `--no-shell`, which skips the separate headless-shell download. HentaiTV and AnimeIDHentai run that full Chromium executable without a window (`headless=True`) to resolve the JavaScript player. CAPTCHA flows use headed Chromium, with Xvfb when needed on Linux.
+Chromium setup runs only when a browser fallback is needed. The app does not install Chromium or start Xvfb during ordinary startup or successful HTTP requests. An existing browser installation is reused; when it is missing, the app may install it unless `ANIWORLD_NO_AUTO_INSTALL=1`. Keep the app open until installation finishes and make sure the browser cache directory is writable. Xvfb setup is limited to headed browser operations on Linux without a display; the supplied Docker image starts its virtual display when the container starts. The download folder does not control dependency setup.
+
+The app and Docker image install full Chromium with `--no-shell`, which skips the separate headless-shell download. The HentaiTV and AnimeIDHentai fallback runs that executable without a window (`headless=True`). CAPTCHA and Hanime browser fallbacks use headed Chromium, with Xvfb when needed on Linux.
 
 For repeated `403` or captcha failures:
 

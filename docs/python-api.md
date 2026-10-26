@@ -67,6 +67,19 @@ print(movie.title, movie.release_year)
 
 Use a current URL from the source site in real code. Domains and page formats can change independently of the package.
 
+To use the CLI's URL detection and normalization from Python, call `model_for_url`:
+
+```python
+from aniworld.entry import model_for_url
+
+series = model_for_url("https://serienstream.to/serie/stream/example")
+# Replace example with a current series slug before loading metadata or downloading.
+```
+
+The dispatcher normalizes aliases before matching a model and passes that normalized URL to its constructor. Direct model constructors retain their backend-specific URL requirements.
+
+Moflix season episode lists follow API pagination, remove duplicate episode numbers, and return episodes in numeric order. Invalid episode data, repeated pages, and pagination exceeding 100 pages raise errors. Genre recommendation browsing retains its separate [12-title limit](./genre-search#moflix).
+
 ## MangaFire downloads
 
 ```python

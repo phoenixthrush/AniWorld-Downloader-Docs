@@ -35,6 +35,8 @@ Hanime, HentaiTV, and AnimeIDHentai resolve their player handshakes through HTTP
 
 Chromium setup runs only when a browser fallback is needed. The app does not install Chromium or start Xvfb during ordinary startup or successful HTTP requests. An existing browser installation is reused; when it is missing, the app may install it unless `ANIWORLD_NO_AUTO_INSTALL=1`. Keep the app open until installation finishes and make sure the browser cache directory is writable. Xvfb setup is limited to headed browser operations on Linux without a display; the supplied Docker image starts its virtual display when the container starts. The download folder does not control dependency setup.
 
+Check the [external tool directories](./configuration#external-tool-directories) when a browser install or mpv script is not found. OS directory variables require absolute paths; blank or relative values use defaults. If you installed Chromium with `PLAYWRIGHT_BROWSERS_PATH`, run the app with the same value.
+
 The app and Docker image install full Chromium with `--no-shell`, which skips the separate headless-shell download. The HentaiTV and AnimeIDHentai fallback runs that executable without a window (`headless=True`). CAPTCHA and Hanime browser fallbacks use headed Chromium, with Xvfb when needed on Linux.
 
 For repeated `403` or captcha failures:
@@ -55,6 +57,8 @@ Current Moflix requests use HTTP first, then Chromium when the response identifi
 Update the package if your version lacks this fallback. If it still fails, follow the browser checks above and include the debug log in your report. Other HTTP errors still propagate; the fallback does not treat every `403` as a Cloudflare challenge.
 
 The app validates bootstrap data and API JSON before using them. A verification page or malformed response now produces an error message rather than an empty title list; HTTP search, browse, and genre endpoints return `502` for these Moflix errors. Failed requests are not cached, so a retry can recover. Genre browsing returns at most 12 recommendations because that endpoint has no pagination and rejects larger limits.
+
+The Moflix homepage row and keyword search allow up to two minutes for verification. A failed browse row shows **Try again** so you can repeat the request after resolving the problem. Season episode lists follow their API pages separately from genre recommendations.
 
 ## A provider fails
 

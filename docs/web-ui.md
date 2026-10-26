@@ -16,6 +16,8 @@ The default address is `http://localhost:8080`.
 4. Add the selection to the queue.
 5. Open **Queue** to watch progress, reorder items, retry failures, or cancel work.
 
+Search failures display an error, and failed browse rows offer **Try again**. Moflix's homepage title row and keyword searches allow up to two minutes for requests that may need verification. Retrying a failed browse row fetches it again.
+
 The remaining pages are intentionally simple:
 
 | Page | What it does |

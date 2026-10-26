@@ -29,6 +29,8 @@ pytest
 
 Review formatting changes before finishing. CI runs pytest, lint checks, and `ruff format --check` to verify formatting without rewriting files. The automated suite uses temporary configuration, database, and download locations and blocks network connections, including DNS lookups, native curl requests, and browser launches, during collection and test execution. CI installs dependencies from package registries, but the tests must not fetch source sites or stream hosters. They test behavior with fixtures and mocked services; passing them does not confirm that third-party sites currently work.
 
+Each push or pull-request update starts an independent test workflow run. Earlier runs continue when new commits arrive, so multiple runs can execute concurrently.
+
 ## Live provider checks
 
 Run these from the application repository with its Python environment activated. `PYTHONPATH=src` makes the checks use your current source checkout:

@@ -4,6 +4,8 @@ The Web UI exposes JSON endpoints for search, title metadata, downloads, the que
 
 For direct use inside Python, see the [Python API](./python-api).
 
+The title/season/episode/provider endpoints and queued downloads normalize supported URL aliases before model construction. This includes SerienStream's `/serie/stream/SLUG` paths and Moflix browser links with title slugs; supported episode query parameters and fragments are preserved. See [accepted source URLs](./supported-sites#current-backend-coverage).
+
 ## Create and use a key
 
 Open **Settings → API Keys**, create a key with the permissions your integration needs, and copy it when shown. The app stores a hash, so the original key cannot be retrieved later.
@@ -117,7 +119,7 @@ Use the in-app endpoint examples for required fields and additional routes. Libr
 
 Check the HTTP status before reading a success payload. Common responses are `400` for invalid inputs, `401` for invalid or expired keys, and `403` for insufficient permissions. Some operations return `409` when work is already running. Error responses commonly contain an `error` string.
 
-Nonempty JSON mutation bodies sent with the wrong content type return `415`. Some malformed download requests are accepted and fail later in the queue; search can return an empty list on an upstream failure.
+Nonempty JSON mutation bodies sent with the wrong content type return `415`. Some malformed download requests are accepted and fail later in the queue. Propagated search failures return `502`; backends that suppress their own errors can still return an empty success response.
 
 Genre requests return `404` for unavailable genres, `502` for upstream HTTP/request failures or Moflix verification/JSON errors, and `400` for invalid site, slug, or nonnumeric page input. Pages below 1 are treated as page 1. Other uncaught failures can still return `500`. Search results are not cached. Browse/genre fetches that raise or return `None` are not cached; successful results, including empty lists, are cached for an hour.
 

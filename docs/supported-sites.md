@@ -6,6 +6,8 @@ AniWorld and SerienStream are the main focus of the project.
 
 The `models` branch registers all 13 sources listed below. AniWorld, SerienStream, and BurningSeries accept series, season, and episode URLs. MegaKino, FilmPalast, and Filmo use title pages; Kinox also carries episode selection in URL query parameters. Moflix accepts title URLs with optional slugs, `/season/N` or `/season/N/episodes/N` suffixes, and `?season=N&episode=N` selectors. Its model normalizes accepted links to `https://moflix-stream.xyz/titles/ID` plus the episode selector.
 
+CLI and Web dispatch, queued downloads, Auto-Sync, and Discord requests pass normalized URLs to their models. SerienStream's `/serie/stream/SLUG` alias becomes `/serie/SLUG`; supported query parameters and episode fragments remain intact. Python integrations can use the [same dispatcher](./python-api#other-sources). Moflix season episode lists follow the source API's pagination; its separate genre recommendation endpoint keeps the [12-title limit](./genre-search#moflix).
+
 MangaFire accepts `/title/ID-slug`, chapter URLs, and `/volume/ID` URLs. It downloads chapter images or CBZ/EPUB archives; title archive downloads prefer available English volumes. EPUB needs the optional `epub` extra. Adult-site URL support is listed [below](#adult-site-backends).
 
 Backend registration means the code supports those inputs; it does not establish that a third-party source is reachable or that its streams currently work.

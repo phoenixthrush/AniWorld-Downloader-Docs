@@ -27,15 +27,28 @@ ANIWORLD_DOWNLOAD_PATH=Downloads
 
 **Settings → Administration → Export settings** downloads the configurable Web UI settings as an `.env` file; it is not a complete export of every startup variable. Secrets such as the Discord token, OIDC secret, and administrator password are omitted; keep those values when merging the export into your existing configuration.
 
-AniWorld settings use the `ANIWORLD_` prefix. The MangaFire format setting is `ANIWORLD_MANGAFIRE_FORMAT`; an older app `.env` is migrated automatically. OS and dependency variables such as `PATH`, `DISPLAY`, `XDG_CACHE_HOME`, `APPDATA`, `LOCALAPPDATA`, `PLAYWRIGHT_BROWSERS_PATH`, `PLAYWRIGHT_NODEJS_PATH`, `SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, and `WERKZEUG_RUN_MAIN` keep the names required by those systems. They are not AniWorld settings.
+AniWorld settings use the `ANIWORLD_` prefix. The MangaFire format setting is `ANIWORLD_MANGAFIRE_FORMAT`; an older app `.env` is migrated automatically. OS and dependency variables such as `PATH`, `DISPLAY`, `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`, `APPDATA`, `LOCALAPPDATA`, `PLAYWRIGHT_BROWSERS_PATH`, `PLAYWRIGHT_NODEJS_PATH`, `SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, and `WERKZEUG_RUN_MAIN` keep the names required by those systems. They are not AniWorld settings.
 
 At startup the app rewrites `.env` from its bundled template, retaining existing values for template keys and the three CA variables. Other keys and custom comments are removed. Set dependency variables such as `PLAYWRIGHT_BROWSERS_PATH` in the process or container environment instead of relying on the app `.env` to retain them.
 
 Certificate bundle paths can be set in the process environment or the app `.env`. The process environment wins for the same variable, and the three CA variables survive `.env` template updates. At startup, the first nonempty value in `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, then `SSL_CERT_FILE` order supplies the shared HTTP session's bundle and defaults for unset CA variables; otherwise certifi supplies the bundle. Explicit values are preserved, so different paths can intentionally give clients different trust settings. Setting only `SSL_CERT_FILE` also supplies the Requests/cURL defaults. These settings do not configure Chromium's trust store or guarantee that external tools such as FFmpeg, mpv, or Syncplay use that bundle.
 
-Existing process environment variables override values loaded from `.env`. CLI options override the corresponding settings for that invocation. A relative `--output` path is resolved from the current working directory; all backend models expand `~` and resolve relative `ANIWORLD_DOWNLOAD_PATH` or Python `selected_path` values beneath your home directory. Surrounding whitespace is trimmed from `ANIWORLD_DOWNLOAD_PATH`; spaces in an explicit Python path are preserved. An unset or blank download setting defaults to `~/Downloads`. MangaFire's explicit Python `download(folder=...)` argument remains a direct destination, with relative folders based on the working directory. Restart after editing startup configuration.
+Existing process environment variables override values loaded from `.env`. CLI options override the corresponding settings for that invocation. `--output` and `--episode-file` expand `~`, including when the argument is quoted; relative CLI paths use the current working directory. All backend models expand `~` and resolve relative `ANIWORLD_DOWNLOAD_PATH` or Python `selected_path` values beneath your home directory. Surrounding whitespace is trimmed from `ANIWORLD_DOWNLOAD_PATH`; spaces in an explicit Python path are preserved. An unset or blank download setting defaults to `~/Downloads`. MangaFire's explicit Python `download(folder=...)` argument remains a direct destination, with relative folders based on the working directory. Restart after editing startup configuration.
 
-Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. Relative values are resolved against your home directory. On first relocation, the app can copy the old `.env`; it does not migrate the database or theme files. Move those separately with the app stopped if you want to retain them.
+Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. Empty or whitespace-only values use the default app directory. Relative values are resolved against your home directory. On first relocation, the app can copy the old `.env`; it does not migrate the database or theme files. Move those separately with the app stopped if you want to retain them.
+
+## External tool directories
+
+AniWorld places AniSkip scripts and Anime4K configuration beneath the mpv configuration directory. Its default Chromium setup selects a separate browser cache:
+
+| Files | Windows | macOS | Linux |
+| --- | --- | --- | --- |
+| mpv configuration | `%APPDATA%/mpv` | `$XDG_CONFIG_HOME/mpv`, default `~/.config/mpv` | `$XDG_CONFIG_HOME/mpv`, default `~/.config/mpv` |
+| Chromium binaries | `%LOCALAPPDATA%/ms-playwright` | `~/Library/Caches/ms-playwright` | `$XDG_CACHE_HOME/ms-playwright`, default `~/.cache/ms-playwright` |
+
+`APPDATA`, `LOCALAPPDATA`, `XDG_CONFIG_HOME`, and `XDG_CACHE_HOME` must contain absolute paths. Missing, blank, or relative values use the platform default. On Windows, the app-data fallbacks are `~/AppData/Roaming` and `~/AppData/Local`. A literal `~/...` is relative in these OS variables; use an absolute path or expand `$HOME` in the shell. When a nonempty `XDG_CONFIG_HOME` is invalid, AniWorld replaces it with the default in its running process so older mpv builds read the same directory.
+
+Explicit `PLAYWRIGHT_BROWSERS_PATH` and `PLAYWRIGHT_NODEJS_PATH` values retain Patchright's own semantics. For example, `PLAYWRIGHT_BROWSERS_PATH=0` keeps its special meaning. Use the same values when installing Chromium manually and running the app.
 
 ## Everyday settings
 

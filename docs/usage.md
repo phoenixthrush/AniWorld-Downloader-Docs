@@ -20,6 +20,8 @@ aniworld --episode-file episodes.txt --no-menu
 
 URLs may point to a supported series, season, episode, movie, or manga title. What is accepted depends on the site.
 
+The CLI normalizes supported URL aliases before choosing and constructing a model. SerienStream links such as `/serie/stream/SLUG` work as `/serie/SLUG`, and Moflix browser links with title slugs are converted to the backend's canonical form. Episode selectors in query parameters or fragments are preserved. See [supported inputs](./supported-sites#current-backend-coverage).
+
 Only AniWorld and SerienStream series URLs open the episode-selection menu. Season and episode URLs, and other sites, run the requested action directly. Use `--no-menu` for multiple positional URLs; without it, only the first is used unless `--episode-file` is supplied. Episode files append their nonblank lines to any positional URLs and process them directly.
 
 ## Choose the action
@@ -113,13 +115,15 @@ Use this only when you already have a provider page URL:
 aniworld --provider VOE --provider-url "https://voe.sx/e/example"
 ```
 
-The media is written to `input.mkv` in the configured download folder.
+The media is written to `input.mkv` in the configured download folder, which is created if needed. This uses the shared download-root rules: `ANIWORLD_DOWNLOAD_PATH=Downloads` means `~/Downloads`, and an unset or blank value also defaults to `~/Downloads`. `--output` overrides that setting and keeps CLI path semantics.
 
 ## Paths and output formats
 
 ```bash
 aniworld --no-menu --output "/path/to/downloads" "URL"
 ```
+
+Quoted home paths work too: `--output "~/Videos"` uses your home directory, as does `--episode-file "~/urls.txt"`. Relative arguments such as `--output "./downloads"` or `--episode-file "urls.txt"` use the current working directory. See [path configuration](./configuration#what-survives-a-restart) for the different rules used by environment settings and Python model paths.
 
 Use the [naming template](./configuration#file-names) to control folders, filenames, and the MKV/MP4 extension. `ANIWORLD_VIDEO_CODEC=copy` preserves the original streams without re-encoding. Direct HTTP downloads, including HentaiTV and AnimeIDHentai, copy the source video regardless of the encoding preference. Multi-language muxing examples are available in the repository's [AniWorld examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples/aniworld_to) and [SerienStream examples](https://github.com/phoenixthrush/AniWorld-Downloader/tree/models/examples/s_to).
 

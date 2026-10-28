@@ -67,7 +67,7 @@ If a hoster fails, the downloader can try others in your configured fallback ord
 
 The checks discover current titles through browse/search, select an episode or chapter, and resolve its links through the backend. HentaiTV, AnimeIDHentai, and HentaiHaven used the search keyword `kanojo`; their poster checks verify URL extraction. MangaFire checked Darling in the Franxx and Velvet Kiss. The standalone hoster script used its existing saved embed URLs without replacing them. A deleted or changed saved sample can fail while fresh source-site samples pass, as observed for VOE and Filemoon. MoflixClick and Vidara were reached through Moflix; Gupload still had no saved or discovered sample.
 
-VOE preview errors included quoted URLs being used as request URLs. A follow-up metadata check found that the selected AnimeIDHentai title's linked player page supplied the input with the mismatched basename; no video was downloaded to establish its content.
+VOE preview errors included quoted URLs being used as request URLs. The URL-construction bug is fixed; preview availability has not been rechecked live. A follow-up metadata check found that the selected AnimeIDHentai title's linked player page supplied the input with the mismatched basename; no video was downloaded to establish its content.
 
 
 ## Enable or hide sites

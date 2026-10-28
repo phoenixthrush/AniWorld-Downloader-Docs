@@ -108,7 +108,7 @@ chapter = MangaFireToChapter(
 
 Replace the URL placeholder before running. Use `selected_path` on a chapter or `download(folder=...)` to choose a destination; `MangaFireToSeries` itself does not accept `selected_path`.
 
-A chapter's `selected_path` also applies to `chapter.pages[n].download()` when no folder is supplied. Standalone chapters and pages use the parent manga title for their top-level folder, including CBZ/EPUB output; EPUB book metadata uses that title too. Explicit `folder` destinations remain direct paths rather than roots to which the manga title is appended. Previously misplaced files are not moved automatically.
+A chapter's `selected_path` also applies to `chapter.pages[n].download()` when no folder is supplied. Standalone chapters and pages use the parent manga title for their top-level folder, including CBZ/EPUB output; EPUB book metadata uses that title too. Explicit `folder` destinations and image `file_path` arguments expand `~`, with ordinary relative paths based on the working directory. They remain direct destinations rather than roots to which the manga title is appended. Previously misplaced files are not moved automatically.
 
 Title and chapter URLs accept both ID-only and ID-with-slug forms. Chapter lookup matches the title ID and numeric chapter number, so an optional title slug, trailing slash, or equivalent number such as `1` and `1.0` does not change the identity. Objects returned by `series.chapters` or `series.preferred_chapters` already carry their parent and chapter ID. Volume URLs encode their ID directly. A chapter that cannot be matched raises an error when its pages are requested rather than requesting chapter ID zero.
 

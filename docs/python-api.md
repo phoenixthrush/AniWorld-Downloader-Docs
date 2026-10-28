@@ -110,7 +110,7 @@ Replace the URL placeholder before running. Use `selected_path` on a chapter or 
 
 A chapter's `selected_path` also applies to `chapter.pages[n].download()` when no folder is supplied. Standalone chapters and pages use the parent manga title for their top-level folder, including CBZ/EPUB output; EPUB book metadata uses that title too. Explicit `folder` destinations remain direct paths rather than roots to which the manga title is appended. Previously misplaced files are not moved automatically.
 
-Prefer chapter objects returned by `series.chapters` or `series.preferred_chapters`, which carry their parent and chapter ID. Automatic ID lookup currently compares chapter URLs literally: a title slug in a direct chapter URL can prevent a match, while an ID-only title URL cannot construct its parent series without a slug. Reuse the discovered object, or supply its known `series`, `chapter_id`, and `chapter_number` when constructing a chapter with other options. Volume URLs encode their ID directly and do not need this chapter lookup.
+Title and chapter URLs accept both ID-only and ID-with-slug forms. Chapter lookup matches the title ID and numeric chapter number, so an optional title slug, trailing slash, or equivalent number such as `1` and `1.0` does not change the identity. Objects returned by `series.chapters` or `series.preferred_chapters` already carry their parent and chapter ID. Volume URLs encode their ID directly. A chapter that cannot be matched raises an error when its pages are requested rather than requesting chapter ID zero.
 
 ## Adult-site backends
 

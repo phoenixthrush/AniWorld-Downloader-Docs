@@ -31,7 +31,7 @@ Install `aniworld[epub]` with the Python interpreter running the app, then resta
 
 ## A MangaFire chapter cannot load its pages
 
-Use the chapter object returned by `MangaFireToSeries(...).chapters`, or a URL returned by the Web UI's chapter lookup. Direct URLs with a different title-slug form can fail the current chapter-ID matching; an ID-only title URL also needs parent context. See the [Python API workaround](./python-api#mangafire-downloads). An empty page list does not necessarily mean that the source chapter has no pages.
+Use the chapter object returned by `MangaFireToSeries(...).chapters`, or a current URL returned by the Web UI's chapter lookup. Both ID-only and slugged title forms are supported. If the chapter ID cannot be resolved, check that the chapter is still listed by its parent manga. See the [Python API](./python-api#mangafire-downloads). An empty page list does not necessarily mean that the source chapter has no pages.
 
 If an archived chapter appears undownloaded in the page picker, the current marker checks only loose images. Repeating the CBZ/EPUB download still reuses valid archived pages.
 

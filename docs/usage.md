@@ -135,7 +135,7 @@ JPG saves chapter images. Title downloads create one CBZ or EPUB per available E
 
 EPUB pages remain images; WebP is converted to PNG. Repeated archive downloads reuse valid pages and preserve previously saved unselected pages. Open saved manga in an external reader; the Web UI Library has no manga reader. See the [Python API](./python-api#mangafire-downloads) or [HTTP API](./http-api#queue-a-download) for page selection.
 
-Standalone chapters, pages and archives use the manga title beneath the chosen root. For direct Python chapter URLs, prefer discovered chapter objects because automatic ID lookup has [URL-form limitations](./python-api#mangafire-downloads). Download-dialog page markers currently recognize loose images only, not pages already stored inside CBZ/EPUB archives.
+Standalone chapters, pages and archives use the manga title beneath the chosen root. Direct chapter URLs support both ID-only and slugged title forms; see the [Python API](./python-api#mangafire-downloads) for chapter objects and destination options. Download-dialog page markers currently recognize loose images only, not pages already stored inside CBZ/EPUB archives.
 
 ## Playback enhancements
 

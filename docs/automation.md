@@ -15,6 +15,8 @@ The library acts as the list of followed titles. When a feed entry matches a tit
 
 Exclude a series when you want to keep it in your library without having Auto-Sync update it. Exclusions are saved in the database and apply to the series URL across library locations. Matching relies on title folder names and `SxxEyy`/`SxxEyyy` episode markers. Custom naming without those markers can cause episodes already on disk to be queued again. With language separation enabled, the language folder determines the preset; otherwise detection probes one existing video file per title folder.
 
+Title folders must sit directly beneath a configured root or language folder. An extra category level such as `Anime/{title}/...` is not followed when matching feed entries. Auto-Sync and Discord submissions also bypass the Web UI's English Sub restriction; see [language settings](./configuration#everyday-settings) for its current scope.
+
 Auto-Sync detects the languages of your existing files and checks availability for incoming episodes. If it cannot detect a language, or the new episodes are only available in another language, it skips the title instead of switching languages automatically.
 
 Each matching library copy is handled separately. If an unseparated copy contains several presets, one is selected per run in this order: German Dub, German Sub, English Dub, English Sub. Feed language flags filter announced episodes; older gaps are queued without checking every episode's available streams first and can still fail during download.

@@ -69,6 +69,8 @@ For Hanime, use language `Japanese` and provider `HanimeTV`; the global download
 
 For manga, `/api/seasons?url=TITLE_URL&mangafire_format=cbz` (or `epub`) lists available English volumes with chapter fallback; entries include `is_volume`. `/api/episodes?url=UNIT_URL&series_url=TITLE_URL` lists their pages. Queue the returned chapter or volume URL with optional 1-based `selected_pages`; explicit chapter URLs stay chapter downloads. EPUB requires the [optional extra](./quick-start#optional-features).
 
+Use chapter URLs returned by these lookups: automatic chapter-ID matching can fail for an equivalent URL containing a different title-slug form. A manga page's `downloaded` flag checks loose image files and does not inspect CBZ/EPUB archives.
+
 ## Read and filter the queue
 
 Without parameters, `GET /api/queue` returns the full `items` list, including episode lists, plus `ffmpeg_progress`. Each item's `episodes` field is a JSON-encoded string. The `errors` field is also JSON-encoded when errors are present; decode these fields before inspecting their entries.

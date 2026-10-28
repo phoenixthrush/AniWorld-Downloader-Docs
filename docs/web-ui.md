@@ -36,6 +36,8 @@ With language separation enabled, Library locations include only the four German
 
 For manga output formats and page selection, see [manga usage](./usage#mangafire-downloads).
 
+Manga page download markers check loose image files only. Pages stored in CBZ/EPUB archives can appear undownloaded even though repeating the archive download reuses their valid images.
+
 ## Custom download paths
 
 Admins can add named folders in **Settings > Custom Paths**. A path can also be the default for selected sites. The process must be able to write there or create the folder beneath a writable parent. Saving a custom path does not check filesystem permissions.

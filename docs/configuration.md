@@ -35,6 +35,8 @@ Certificate bundle paths can be set in the process environment or the app `.env`
 
 Existing process environment variables override values loaded from `.env`. CLI options override the corresponding settings for that invocation. `--output` and `--episode-file` expand `~`, including when the argument is quoted; relative CLI paths use the current working directory. All backend models expand `~` and resolve relative `ANIWORLD_DOWNLOAD_PATH` or Python `selected_path` values beneath your home directory. Surrounding whitespace is trimmed from `ANIWORLD_DOWNLOAD_PATH`; spaces in an explicit Python path are preserved. An unset or blank download setting defaults to `~/Downloads`. MangaFire's explicit Python `download(folder=...)` argument remains a direct destination, with relative folders based on the working directory. Restart after editing startup configuration.
 
+MangaFire single-page downloads inherit their chapter's selected root when no explicit folder is passed. Chapters, pages and archives use the manga title for the enclosing folder; see the [Python API](./python-api#mangafire-downloads) for direct chapter URL limitations.
+
 Set `ANIWORLD_INSTALL_FOLDER` before launch to use another app data directory. Empty or whitespace-only values use the default app directory. Relative values are resolved against your home directory. On first relocation, the app can copy the old `.env`; it does not migrate the database or theme files. Move those separately with the app stopped if you want to retain them.
 
 ## External tool directories
@@ -95,6 +97,10 @@ Available placeholders are `{title}`, `{year}`, `{imdbid}`, `{season}`, `{episod
 The codec setting applies to download paths that encode video through FFmpeg. Direct HTTP downloads copy the source media regardless of this preference. Remuxing into MP4 may fall back to H.264/AAC if stream copy fails because the source codecs are incompatible with that container.
 
 Model-specific naming can differ, particularly for manga and movies. MegaKino and Moflix now format all template path components, including legacy percent placeholders, and sanitize metadata. New series paths use padded seasons and three-digit episode numbers; MegaKino treats its flat episode list as season 01. Neither model supplies an IMDb ID, so an empty default IMDb tag is omitted. Movies omit the default season folder and episode marker and respect `ANIWORLD_MOVIE_FOLDER`. If a file already exists at the old model-specific path with the requested extension, that path is reused; an existing file at the new template path takes priority. Old files are not renamed. Keep `SxxEyy` or `SxxEyyy` episode markers and matching title folders for Library and Auto-Sync recognition. Root-level movies saved with `ANIWORLD_MOVIE_FOLDER=0` are not listed by the current Library scanner. Use **Settings → path preview** or the Python model's path attributes to inspect the result before a large batch.
+
+AniWorld, SerienStream and Hanime currently retain only the first two folder components and the final filename; additional intermediate folders are dropped. MegaKino, Moflix and the HentaiTV family preserve deeper folder layouts. Empty optional metadata is not cleaned consistently across all formatters. Keep template components relative and avoid `..`: some formatters do not enforce containment beneath the chosen download root.
+
+Library and Auto-Sync expect title folders directly beneath each download root or language folder. An extra category folder such as `Anime/{title}/...` is not understood as another title level. The path preview is an AniWorld series example plus a fixed movie example; it does not validate every backend's output.
 
 ## Sources and playback
 

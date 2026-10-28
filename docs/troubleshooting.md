@@ -29,6 +29,12 @@ Docker already includes the parts needed for downloads. Standalone builds still 
 
 Install `aniworld[epub]` with the Python interpreter running the app, then restart the Web UI and retry. For an editable checkout, use `python -m pip install -e ".[epub]"`. JPG and CBZ work without Pillow.
 
+## A MangaFire chapter cannot load its pages
+
+Use the chapter object returned by `MangaFireToSeries(...).chapters`, or a URL returned by the Web UI's chapter lookup. Direct URLs with a different title-slug form can fail the current chapter-ID matching; an ID-only title URL also needs parent context. See the [Python API workaround](./python-api#mangafire-downloads). An empty page list does not necessarily mean that the source chapter has no pages.
+
+If an archived chapter appears undownloaded in the page picker, the current marker checks only loose images. Repeating the CBZ/EPUB download still reuses valid archived pages.
+
 ## Browser or captcha problems
 
 Hanime, HentaiTV, and AnimeIDHentai resolve their player handshakes through HTTP. If that fails, they fall back to Chromium. Other sites may still need a browser for CAPTCHA verification.

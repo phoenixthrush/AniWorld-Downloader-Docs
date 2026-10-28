@@ -4,6 +4,8 @@ The image runs the Web UI with FFmpeg, Patchright Chromium, Xvfb for browser cha
 
 The terminal menu is also usable in the container. The image sets `ANIWORLD_MENU_DOWNLOAD_ONLY=1` to hide Watch and Syncplay there, regardless of the download folder. Save Location uses `ANIWORLD_DOWNLOAD_PATH`.
 
+The image entrypoint runs the command through `tini` and `xvfb-run`, which starts a virtual display before the application. This also applies when overriding the container command. Keep that entrypoint when supplying a custom command that may need CAPTCHA handling.
+
 ## Start with Compose
 
 Save [`docker-compose.yaml`](https://github.com/phoenixthrush/AniWorld-Downloader/blob/models/docker-compose.yaml) in a folder on your machine. Run these commands from that folder:

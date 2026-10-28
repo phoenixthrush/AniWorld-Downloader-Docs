@@ -43,6 +43,8 @@ An episode also exposes `provider_data`, `stream_url`, `is_downloaded`, and its 
 
 For AniWorld episodes, `is_downloaded` is a probe-result dictionary with fields such as `exists`, `audio_langs`, and `video_langs`, rather than a boolean. Use the fields relevant to your integration. Series/season batch methods can log individual episode failures and continue without raising or returning an aggregate result. When you need reliable per-episode outcomes, iterate the episodes and handle each action's exception yourself.
 
+For custom player launches, `aniworld.aniskip.build_mpv_flags(skip_data)` returns a list of arguments, or an empty list when no skip times were found. Extend your player's argument list directly; do not split or shell-quote those arguments. Watch and Syncplay use this list so temporary chapter paths containing spaces remain intact.
+
 ## Other sources
 
 All public site model classes are available from either `aniworld` or `aniworld.models`:
@@ -105,6 +107,10 @@ chapter = MangaFireToChapter(
 ```
 
 Replace the URL placeholder before running. Use `selected_path` on a chapter or `download(folder=...)` to choose a destination; `MangaFireToSeries` itself does not accept `selected_path`.
+
+A chapter's `selected_path` also applies to `chapter.pages[n].download()` when no folder is supplied. Standalone chapters and pages use the parent manga title for their top-level folder, including CBZ/EPUB output; EPUB book metadata uses that title too. Explicit `folder` destinations remain direct paths rather than roots to which the manga title is appended. Previously misplaced files are not moved automatically.
+
+Prefer chapter objects returned by `series.chapters` or `series.preferred_chapters`, which carry their parent and chapter ID. Automatic ID lookup currently compares chapter URLs literally: a title slug in a direct chapter URL can prevent a match, while an ID-only title URL cannot construct its parent series without a slug. Reuse the discovered object, or supply its known `series`, `chapter_id`, and `chapter_number` when constructing a chapter with other options. Volume URLs encode their ID directly and do not need this chapter lookup.
 
 ## Adult-site backends
 

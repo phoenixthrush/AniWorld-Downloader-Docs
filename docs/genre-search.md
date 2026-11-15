@@ -15,7 +15,7 @@ Most functions default to `None`; Hanime defaults to `24` and MangaFire to `20`.
 
 ## Runtime genre values
 
-There is no fixed genre allowlist shared by the sites. Depending on the backend, the app reads tags from a live page/API or sends your slug or ID to the site. Example comments marked **09/2026 as of right now** are snapshots, not validation rules.
+There is no fixed genre allowlist shared by the sites. Depending on the backend, the app reads tags from a live page/API or sends your slug or ID to the site. Use the discovery functions for the labels and IDs available from each source.
 
 Discovery helpers are available for all ten sites in the table: `fetch_aniworld_genres`, `fetch_s_to_genres`, `fetch_burningseries_genres`, `fetch_kinox_genres`, `fetch_filmpalast_genres`, `fetch_megakino_genres`, and `fetch_filmo_genres` plus `fetch_hanime_genres`, `fetch_mangafire_genres`, and `fetch_moflix_genres`, all in `aniworld.search`. BurningSeries reads its runtime index, which is cached for the process lifetime. Other browse data may also be cached, so runtime discovery does not mean every call downloads a fresh list.
 
@@ -36,7 +36,7 @@ An unavailable genre may raise an HTTP error or `ValueError`, depending on the b
 | MangaFire | `query_mangafire` | `genre`, `sort`, optional keyword | Follows result pages |
 | Moflix | `query_moflix` | `genre` | One recommendation response, at most 12 titles |
 
-All functions in this table are available from `aniworld.search`. The older backend-specific Hanime and MangaFire functions remain available for existing integrations. Genre discovery returns `name` and `slug` entries for every site. MangaFire also retains the numeric `id`.
+All functions in this table are available from `aniworld.search`. Hanime and MangaFire also expose backend-specific search functions. Genre discovery returns `name` and `slug` entries for every site. MangaFire also retains the numeric `id`.
 
 ## AniWorld
 
@@ -68,7 +68,7 @@ for item in results:
     print(item["title"], item["link"])
 ```
 
-Omit optional filters or pass `None` / `""`. `prod_start` and `prod_end` bound the production years. Sort values documented in the 09/2026 example are `name_asc`, `name_desc`, `latest`, `release`, and `ratings_desc`. Keyword search cannot be combined with genre filters.
+Omit optional filters or pass `None` / `""`. `prod_start` and `prod_end` bound the production years. `sort` is passed to the source's genre filter; examples include `name_asc`, `name_desc`, `latest`, `release`, and `ratings_desc`. Keyword search cannot be combined with genre filters.
 
 ## FilmPalast and MegaKino
 
@@ -113,9 +113,9 @@ results = query_filmo(
 )
 ```
 
-`fetch_filmo_genres()` returns genre entries with `name` and `slug`; the slug is the numeric ID accepted by `genre`. `genre_id` remains supported as an alias. `11` is Horror in the 09/2026 example. Runtime bounds are minutes and country values use the site's two-letter codes. Filters may be omitted or set to `None` / `""`. Keyword search cannot be combined with browse filters.
+`fetch_filmo_genres()` returns genre entries with `name` and `slug`; the slug is the numeric ID accepted by `genre`. `genre_id` is an alias. Replace the example's `11` with an ID returned by discovery. Runtime bounds are minutes and country values use the site's two-letter codes. Filters may be omitted or set to `None` / `""`. Keyword search cannot be combined with browse filters.
 
-The example documents `title_asc`, `title_desc`, `release_desc`, `release_asc`, `rating_desc`, and `rating_asc`. Check the current site when its choices change; the backend does not maintain a fixed option allowlist.
+Sort values such as `title_asc`, `title_desc`, `release_desc`, `release_asc`, `rating_desc`, and `rating_asc` are sent to the source. Use its filter form to check available choices; the backend does not maintain a fixed option allowlist.
 
 ## Hanime
 
@@ -128,7 +128,7 @@ for item in results:
     print(item["name"], item["slug"])
 ```
 
-Sorting requires a genre. The 09/2026 example lists `created_at_asc`, `released_at_desc`, `released_at_asc`, `views_desc`, `views_asc`, `likes_desc`, `name_asc`, and `name_desc`. Omit `sort` for recent uploads. A keyword filters the cards on the fetched genre page; it does not search every page of that genre.
+Sorting requires a genre. Sort values such as `created_at_asc`, `released_at_desc`, `released_at_asc`, `views_desc`, `views_asc`, `likes_desc`, `name_asc`, and `name_desc` are sent to the source. Omit `sort` for recent uploads. A keyword filters the cards on the fetched genre page; it does not search every page of that genre.
 
 ## MangaFire
 

@@ -41,7 +41,19 @@ episode.download()
 
 An episode also exposes `provider_data`, `stream_url`, `is_downloaded`, and its related `series` and `season` objects. Network-backed properties can raise an exception when a source or host is unavailable, so handle failures in long-running integrations.
 
-For AniWorld episodes, `is_downloaded` is a probe-result dictionary with fields such as `exists`, `audio_langs`, and `video_langs`, rather than a boolean. Use the fields relevant to your integration. Series/season batch methods can log individual episode failures and continue without raising or returning an aggregate result. When you need reliable per-episode outcomes, iterate the episodes and handle each action's exception yourself.
+AniWorld and SerienStream expose two episode numbers. `episode_number` reads explicit `[Episode N]` and `[JP Episode N]` markers in `title_en`, as well as titles consisting of `Episode N` or `JP Episode N`. A title without an unambiguous positive marker uses the seasonal index. `season_episode_number` is the original index within the season. The constructor's optional `episode_number` argument supplies that seasonal index. Audio-language selection does not affect numbering, and AniWorld movies use their film index.
+
+```python
+episode = AniworldEpisode(
+    "https://aniworld.to/anime/stream/one-piece/staffel-2/episode-1"
+)
+print(episode.episode_number)         # 62
+print(episode.season_episode_number)  # 1
+```
+
+Use episode objects and their `url` values from the source listings when selecting downloads. Generated filenames use `episode_number`; URL paths and season-specific metadata retain the seasonal index. [File naming](./configuration#file-names) describes existing-file reuse and source metadata.
+
+For AniWorld and SerienStream episodes, `is_downloaded` is a probe-result dictionary with fields such as `exists`, `audio_langs`, and `video_langs`, rather than a boolean. Use the fields relevant to your integration. Series/season batch methods can log individual episode failures and continue without raising or returning an aggregate result. When you need reliable per-episode outcomes, iterate the episodes and handle each action's exception yourself.
 
 For custom player launches, `aniworld.aniskip.build_mpv_flags(skip_data)` returns a list of arguments, or an empty list when no skip times were found. Extend your player's argument list directly; do not split or shell-quote those arguments. Watch and Syncplay use this list so temporary chapter paths containing spaces remain intact.
 
@@ -108,7 +120,7 @@ chapter = MangaFireToChapter(
 
 Replace the URL placeholder before running. Use `selected_path` on a chapter or `download(folder=...)` to choose a destination; `MangaFireToSeries` itself does not accept `selected_path`.
 
-A chapter's `selected_path` also applies to `chapter.pages[n].download()` when no folder is supplied. Standalone chapters and pages use the parent manga title for their top-level folder, including CBZ/EPUB output; EPUB book metadata uses that title too. Explicit `folder` destinations and image `file_path` arguments expand `~`, with ordinary relative paths based on the working directory. They remain direct destinations rather than roots to which the manga title is appended. Previously misplaced files are not moved automatically.
+A chapter's `selected_path` also applies to `chapter.pages[n].download()` when no folder is supplied. Standalone chapters and pages use the parent manga title for their top-level folder, including CBZ/EPUB output; EPUB book metadata uses that title too. Explicit `folder` destinations and image `file_path` arguments expand `~`, with ordinary relative paths based on the working directory. They remain direct destinations rather than roots to which the manga title is appended. Downloads do not relocate files from other destinations.
 
 Title and chapter URLs accept both ID-only and ID-with-slug forms. Chapter lookup matches the title ID and numeric chapter number, so an optional title slug, trailing slash, or equivalent number such as `1` and `1.0` does not change the identity. Objects returned by `series.chapters` or `series.preferred_chapters` already carry their parent and chapter ID. Volume URLs encode their ID directly. A chapter that cannot be matched raises an error when its pages are requested rather than requesting chapter ID zero.
 

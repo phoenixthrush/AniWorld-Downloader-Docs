@@ -54,7 +54,7 @@ For repeated `403` or captcha failures:
 
 Some sites use regional blocks or change their protection without warning.
 
-CAPTCHA verification can still fail. An earlier **10/2026** check found that switching from a German VPN location to an Austrian one resolved Turnstile error `600010` ("Verification failed") for a sample episode. That is a historical observation for one connection and title, not a general fix. If verification keeps failing, try another VPN location or network.
+CAPTCHA verification depends on the source site and the connection's IP reputation. If verification keeps failing, compare access through another VPN location or network and include the displayed verification error in your report.
 
 ### Moflix browse or search fails
 
@@ -62,7 +62,7 @@ Current Moflix requests use HTTP first, then Chromium when the response identifi
 
 Update the package if your version lacks this fallback. If it still fails, follow the browser checks above and include the debug log in your report. Other HTTP errors still propagate; the fallback does not treat every `403` as a Cloudflare challenge.
 
-The app validates bootstrap data and API JSON before using them. A verification page or malformed response now produces an error message rather than an empty title list; HTTP search, browse, and genre endpoints return `502` for these Moflix errors. Failed requests are not cached, so a retry can recover. Genre browsing returns at most 12 recommendations because that endpoint has no pagination and rejects larger limits.
+The app validates bootstrap data and API JSON before using them. Verification pages and malformed responses produce an error message; HTTP search, browse, and genre endpoints return `502` for these Moflix errors. Failed requests are not cached, so a retry can recover. Genre browsing returns at most 12 recommendations because that endpoint has no pagination and rejects larger limits.
 
 The Moflix homepage row and keyword search allow up to two minutes for verification. A failed browse row shows **Try again** so you can repeat the request after resolving the problem. Season episode lists follow their API pages separately from genre recommendations.
 
@@ -76,6 +76,12 @@ ANIWORLD_PROVIDER_FALLBACK_ORDER=VOE,Vidmoly,Vidoza,Doodstream
 ```
 
 A title can exist while one language, episode, or host is unavailable.
+
+## Episode numbers or existing files do not match
+
+AniWorld and SerienStream use explicit episode numbers from English titles when available and seasonal indices otherwise. Season numbers and source URLs use the source's original indices. The Library displays the numbers stored in filenames, so a retained seasonal file can have a different label from its episode in the download dialog.
+
+Downloads record the source episode URL in container metadata. That URL identifies the episode even when filename numbers overlap. A file without matching source metadata must be unambiguous; otherwise detection reports a numbering conflict. Verify its episode and source URL before restoring the metadata or moving the file aside. Filename changes alone do not resolve every overlap. Check the selected destination, language folder, naming template and extension when an existing download is not reused. See [file naming](./configuration#file-names).
 
 ## Certificate errors
 

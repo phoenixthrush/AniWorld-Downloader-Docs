@@ -30,7 +30,9 @@ Queue items are processed one at a time. A batch is marked **completed** if at l
 
 Normal cancellation waits for the current episode. Force cancellation can interrupt the active FFmpeg process; direct HTTP, parallel HLS, and manga downloads may continue until their current operation finishes.
 
-The Library view scans title folders for video files and episode markers. Loose videos at the download root are not listed, and manga images/CBZ/EPUB files do not have a reader or chapter listing. Naming patterns without recognized episode markers can make a series appear as a movie. Two-digit episode markers such as `S01E01` are recognized, but individual episode deletion currently expects three digits (`S01E001`).
+For AniWorld and SerienStream, episode labels use an explicit number from the English title when available, with the seasonal index as fallback. Selecting an episode submits its original source URL. See [episode numbering](./configuration#file-names) for supported markers, existing files and numbering conflicts.
+
+The Library view scans title folders for video files and episode markers. Display, grouping and deletion use the numbers in the filenames, including `S01E01`, `S01E001` and `S01E1100`. A file retained at its seasonal path keeps that filename and its Library label; the download dialog can display the English-title number for the same episode. Temporary download and remux outputs are excluded from episode and movie lists. Loose videos at the download root are not listed, and manga images/CBZ/EPUB files do not have a reader or chapter listing. Naming patterns without recognized episode markers can make a series appear as a movie.
 
 With language separation enabled, Library locations include only the four German/English dub/sub folders. Hanime downloads use a `japanese` folder, which is currently omitted from that view.
 
@@ -98,11 +100,11 @@ Most general settings changed in the Web UI last until the process restarts. Put
 - [HTTP API](./http-api) covers scoped keys and queue automation.
 - [Themes and Appearance](./theming) covers CSS, imports, background shaders, and recovery.
 
-The current app has no separate Planned page. Browse rows for new titles are discovery lists, not persistent release subscriptions.
+Browse rows for recently added titles provide discovery lists. Auto-Sync follows titles present in the download library.
 
 ## Sites and languages
 
-Enable or disable site tabs in Settings. Disabled-by-default sources and current status notes are listed under [Supported Sites](./supported-sites). The download dialog normally restricts languages using the first episode's provider data. Enable **Always offer every language** (`ANIWORLD_SHOW_ALL_LANGUAGES=1`) when later episodes offer another language. This keeps all presets for the selected site available, subject to the English Sub restriction; it does not add a missing stream or switch languages automatically. HentaiTV/HentaiHaven retain their fixed preset.
+Enable or disable site tabs in Settings. Disabled-by-default sources and their capabilities are listed under [Supported Sites](./supported-sites). The download dialog normally restricts languages using the first episode's provider data. Enable **Always offer every language** (`ANIWORLD_SHOW_ALL_LANGUAGES=1`) when later episodes offer another language, then reload Home to apply that choice to the page. This keeps all presets for the selected site available, subject to the English Sub restriction; it does not add a missing stream or switch languages automatically. HentaiTV/HentaiHaven retain their fixed preset.
 
 Genre browsing is available for AniWorld, SerienStream, BurningSeries, MegaKino, Kinox, FilmPalast, Filmo, Hanime, MangaFire, and Moflix. Genre names come from each site's current listing. Additional filters such as production years and sorting remain available through [Python search functions](./genre-search).
 

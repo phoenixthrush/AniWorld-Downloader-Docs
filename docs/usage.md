@@ -105,7 +105,7 @@ aniworld --no-menu --action Syncplay \
   "URL"
 ```
 
-When no room is supplied, AniWorld Downloader creates one from the episode filename. `--syncplay-password` hashes that filename with your value to derive the room name; it does not authenticate to the Syncplay server and is ignored with an explicit room. See [Syncplay configuration](./configuration#syncplay) for the environment settings.
+When no room is supplied, AniWorld Downloader creates one from the episode filename. AniWorld and SerienStream use the original seasonal episode number for this name so title-based download numbering and existing filenames share the same room. `--syncplay-password` hashes that filename with your value to derive the room name; it does not authenticate to the Syncplay server and is ignored with an explicit room. See [Syncplay configuration](./configuration#syncplay) for the environment settings.
 
 ## Direct provider URL
 

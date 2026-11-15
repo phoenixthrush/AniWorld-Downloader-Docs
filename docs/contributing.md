@@ -90,4 +90,4 @@ A stale test URL, VPN/IP block, CAPTCHA, or unavailable hoster can fail a sample
 
 Include your app version, OS, installation method, Python version where applicable, reproduction steps, affected page URL, selected hoster/language, and relevant logs. Remove secrets such as cookies, API keys, and bot tokens. A small reproducible example is more helpful than an entire configuration file.
 
-For pull requests, explain the behavior before and after the change and how you checked it. Keep unrelated cleanup separate.
+For pull requests, describe the resulting behavior, scope and validation. Include relevant failure cases and limitations, and keep unrelated cleanup separate.

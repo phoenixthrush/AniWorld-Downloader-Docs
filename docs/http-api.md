@@ -52,6 +52,14 @@ Use a slug returned by the genre list. Each page contains up to 30 results. AniW
 
 HentaiTV and HentaiHaven support keyword search through `hentaitv` and `hentaihaven`, but are not in the genre registry. AnimeIDHentai is available through CLI/Python only. Unknown keyword-search site keys return an empty `results` list. Exceptions propagated by a search backend return `502` with an `error` message; a backend that handles its own failure by returning no hits can still produce an empty success response.
 
+## Episode metadata and numbering
+
+`GET /api/episodes?url=SEASON_URL&series_url=SERIES_URL` returns an `episodes` list with each episode's `url`, `episode_number`, titles, `downloaded` flag and available languages.
+
+For AniWorld and SerienStream, `episode_number` uses an explicit number from the English title when available, with the seasonal index as fallback. For example, One Piece season 2, episode 1 has `episode_number: 62`, while its URL ends in `/staffel-2/episode-1`. Season numbers retain the source's season index. Submit the returned episode URLs to `/api/download`; do not construct a URL from the displayed episode number.
+
+The `downloaded` flag recognises current and seasonal filenames across configured library copies. Source episode metadata takes precedence over filename numbers. An ambiguous file without matching source metadata raises an error requiring manual resolution. See [file naming and detection](./configuration#file-names).
+
 ## Queue a download
 
 Use actual URLs returned by the site's episode lookup. This example contains placeholders:

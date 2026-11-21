@@ -92,6 +92,8 @@ Kinox may require opening the title page and solving its challenge manually befo
 
 ## Settings and persistence
 
+Under **Settings → Downloads**, enable **Number episodes per season** to use the seasonal index in new AniWorld and SerienStream filenames. Before changing the option for a library with existing files, see [switching an existing library to seasonal numbering](./configuration#switching-an-existing-library-to-seasonal-numbering).
+
 Most general settings changed in the Web UI last until the process restarts. Put values in the app directory's `.env` (`~/.aniworld/.env` by default) when they must survive restarts. Custom paths, users, API keys, queue data, and Auto-Sync exclusions are stored in the Web UI database. Themes and Discord bot settings also persist. See [Configuration](./configuration#what-survives-a-restart) for the distinction and the settings export option.
 
 ## Automation and integrations

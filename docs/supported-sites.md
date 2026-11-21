@@ -34,7 +34,7 @@ The table describes implemented source integrations. Availability depends on the
 
 "Disabled by default" refers to Web UI visibility; direct CLI URLs remain accepted.
 
-AniWorld and SerienStream use explicit episode numbers from English titles when available, with seasonal numbering as fallback. Source URLs retain the seasonal index. See [episode numbering and existing downloads](./configuration#file-names).
+By default, AniWorld and SerienStream use explicit episode numbers from English titles in filenames when available, with the seasonal index as a fallback. Enable **Number episodes per season** to use the seasonal index for new downloads. Source URLs use the seasonal index. See [episode numbering and existing downloads](./configuration#file-names).
 
 ## Adult-site backends
 

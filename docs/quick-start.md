@@ -13,6 +13,8 @@ aniworld --version
 
 Windows may use `py -m pip` instead. Some Linux systems use `python3 -m pip`.
 
+If pip reports `externally-managed-environment`, create and activate a virtual environment, then rerun the install command. [Python Packaging Guide](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#create-and-use-virtual-environments)
+
 ::: tip First launch
 Chromium setup is deferred until a browser-backed feature needs it, such as captcha handling or JavaScript player resolution. Starting the CLI or Web UI alone does not install it. The first browser-backed request may take longer while Chromium is installed; later requests reuse it.
 :::

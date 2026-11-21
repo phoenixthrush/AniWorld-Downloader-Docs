@@ -79,7 +79,7 @@ A title can exist while one language, episode, or host is unavailable.
 
 ## Episode numbers or existing files do not match
 
-AniWorld and SerienStream use explicit episode numbers from English titles when available and seasonal indices otherwise. Season numbers and source URLs use the source's original indices. The Library displays the numbers stored in filenames, so a retained seasonal file can have a different label from its episode in the download dialog.
+By default, AniWorld and SerienStream use explicit numbers from English titles in filenames when available. With **Number episodes per season** enabled, new filenames use the episode's index within its season. The Library shows the number in the filename, so its label can differ from the English-title number in the download dialog. If a download stops after you change the setting, see [switching an existing library to seasonal numbering](./configuration#switching-an-existing-library-to-seasonal-numbering).
 
 Downloads record the source episode URL in container metadata. That URL identifies the episode even when filename numbers overlap. A file without matching source metadata must be unambiguous; otherwise detection reports a numbering conflict. Verify its episode and source URL before restoring the metadata or moving the file aside. Filename changes alone do not resolve every overlap. Check the selected destination, language folder, naming template and extension when an existing download is not reused. See [file naming](./configuration#file-names).
 

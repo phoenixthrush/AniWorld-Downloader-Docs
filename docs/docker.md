@@ -60,6 +60,8 @@ environment:
   ANIWORLD_WEB_AUTH: "1"
 ```
 
+For seasonal filenames on AniWorld and SerienStream, add `ANIWORLD_SEASON_EPISODE_NUMBERS: "1"` to `environment`. Before enabling it for a library with existing files, see [switching an existing library to seasonal numbering](./configuration#switching-an-existing-library-to-seasonal-numbering).
+
 Alternatively, save environment variables in a host file and add this under `services.aniworld`:
 
 ```yaml

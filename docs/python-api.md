@@ -51,7 +51,7 @@ print(episode.episode_number)         # 62
 print(episode.season_episode_number)  # 1
 ```
 
-Use episode objects and their `url` values from the source listings when selecting downloads. Generated filenames use `episode_number`; URL paths and season-specific metadata retain the seasonal index. [File naming](./configuration#file-names) describes existing-file reuse and source metadata.
+Use episode objects and their `url` values from the source listings when selecting downloads. New filenames use `episode_number` by default and `season_episode_number` when `ANIWORLD_SEASON_EPISODE_NUMBERS=1`. URL paths and season-specific metadata use the seasonal index. See [file naming](./configuration#file-names) for existing-file reuse and source metadata.
 
 For AniWorld and SerienStream episodes, `is_downloaded` is a probe-result dictionary with fields such as `exists`, `audio_langs`, and `video_langs`, rather than a boolean. Use the fields relevant to your integration. Series/season batch methods can log individual episode failures and continue without raising or returning an aggregate result. When you need reliable per-episode outcomes, iterate the episodes and handle each action's exception yourself.
 

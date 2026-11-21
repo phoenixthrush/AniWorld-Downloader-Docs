@@ -125,6 +125,8 @@ All paths below start with `/api`.
 
 Use the in-app endpoint examples for required fields and additional routes. Library and Auto-Sync routes may return `404` when those features are disabled.
 
+`GET /api/settings` returns `season_episode_numbers` as a boolean. Send `{"season_episode_numbers": true}` to `PUT /api/settings` to use seasonal indices in new AniWorld and SerienStream filenames. The change applies until the app restarts. To keep it, set `ANIWORLD_SEASON_EPISODE_NUMBERS=1` in `.env` or your deployment environment. See [seasonal numbering and existing libraries](./configuration#switching-an-existing-library-to-seasonal-numbering).
+
 ## Handle errors
 
 Check the HTTP status before reading a success payload. Common responses are `400` for invalid inputs, `401` for invalid or expired keys, and `403` for insufficient permissions. Some operations return `409` when work is already running. Error responses commonly contain an `error` string.
